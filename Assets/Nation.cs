@@ -13,7 +13,7 @@ public class Nation : MonoBehaviour
     void Start()
     {
         me = this;
-        for(int i = 0; i < 32; i++)
+        for(int i = 0; i < 16; i++)
         {
             GameObject g = Instantiate(statePf, new Vector3(Random.Range(-2.5f, 2.5f), Random.Range(-2.5f, 2.5f), 0), Quaternion.identity);
             states.Add(g.GetComponent<State>());

@@ -35,10 +35,10 @@ public class GraphicsRenderer : MonoBehaviour
                 pixelPos = Camera.main.ScreenToWorldPoint(new Vector3(x, y, 0));
                 Color color = Color.black;
                 color.a = 1;
-                float d = 2 * PN(x, y) + 2;
+                float d = 4 * PN(x, y) + 0.5f;
                 for(int i = 0; i < Nation.me.states.Count; i++)
                 {
-                    float distCurr = Taxicab(pixelPos, (Vector2)Nation.me.states[i].transform.position) + PN(x, y);//(pixelPos - (Vector2)Nation.me.states[i].transform.position).sqrMagnitude;
+                    float distCurr = 1.25f * Taxicab(pixelPos, (Vector2)Nation.me.states[i].transform.position + new Vector2(0.1f * PN(x * 1f, y * 1f), 0.1f * PN(x * 1f + 1000, y * 1f + 1000))) + 2 * PN(x * 0.5f + 10000, y * 0.5f + 10000);//(pixelPos - (Vector2)Nation.me.states[i].transform.position).sqrMagnitude;
                     if(d > distCurr)
                     {
                         d = distCurr;
