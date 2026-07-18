@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.UI;
+//using UnityEngine.UIElements;
 
 
 public class State : MonoBehaviour
@@ -23,11 +25,120 @@ public class State : MonoBehaviour
     [Header("Data")]
 
     public int ID;
+
+    public bool outside;
+
+    public Texture2D tex;
+
+    public Vector4 texSize;
+
+    private Sprite spr;
+
+    public Image spriteR;
+
+    public Button button;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
-        c = new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f), 1f);
+        
     }
+
+    public Texture2D SetClearImage(Texture2D input){
+        for (int y = 0; y < input.height; y++)
+        {
+            for (int x = 0; x < input.width; x++)
+            {
+                input.SetPixel(x, y,  Color.clear);
+               // t.SetPixel(x, y, color);
+            }
+           // t.Apply(); 
+        }
+        return input;
+    }
+
+    public void init()
+    {
+        tex = new Texture2D(1280, 720); 
+        tex.filterMode = FilterMode.Point;
+        tex = SetClearImage(tex);
+        spr = Sprite.Create(tex, new Rect(0.0f, 0.0f, tex.width, tex.height), new Vector2(0.5f, 0.5f), 100.0f);
+        spriteR.sprite = spr;
+        spriteR.alphaHitTestMinimumThreshold = 0.75f;
+
+        c = Color.red;
+        if (outside)
+        {
+            c = new Color(0.1f, 0, 0, 1f);
+            //Debug.Log()
+        } else
+        {
+            c = new Color(0, 0.1f ,0, 1f);
+
+        }
+    }
+
+    public void MoveToFront(){
+        transform.SetSiblingIndex(0);
+    }
+
+    public void finishRendering(){
+        for (int y = tex.height; y > 0; y--)
+        {
+            for (int x = tex.width; x > 0; x--)
+            {
+                Vector2 Difference = ((Vector2)Camera.main.WorldToScreenPoint(Vector3.zero) - (Vector2)Camera.main.WorldToScreenPoint(transform.position));
+                if(tex.GetPixel(x + (int)Difference.x + 4,y + (int)Difference.y) == Color.clear && tex.GetPixel(x + (int)Difference.x,y + (int)Difference.y) != Color.clear){
+                    tex.SetPixel(x + (int)Difference.x, y + (int)Difference.y, Color.white);
+
+                }
+                if(tex.GetPixel(x + (int)Difference.x,y + (int)Difference.y + 4) == Color.clear && tex.GetPixel(x + (int)Difference.x,y + (int)Difference.y) != Color.clear){
+                    tex.SetPixel(x + (int)Difference.x, y + (int)Difference.y, Color.white);
+
+                }
+
+                if(tex.GetPixel(x + (int)Difference.x - 1,y + (int)Difference.y) != Color.clear && tex.GetPixel(x + (int)Difference.x,y + (int)Difference.y) == Color.clear){
+                    tex.SetPixel(x + (int)Difference.x, y + (int)Difference.y, Color.white);
+
+                }
+                if(tex.GetPixel(x + (int)Difference.x,y + (int)Difference.y - 1) != Color.clear && tex.GetPixel(x + (int)Difference.x,y + (int)Difference.y) == Color.clear){
+                    tex.SetPixel(x + (int)Difference.x, y + (int)Difference.y, Color.white);
+
+                }
+               
+            }
+           
+        }
+        //combine at some point!!
+        for (int y = 0; y < tex.height; y++)
+        {
+            for (int x = 0; x < tex.width; x++)
+            {
+                Vector2 Difference = ((Vector2)Camera.main.WorldToScreenPoint(Vector3.zero) - (Vector2)Camera.main.WorldToScreenPoint(transform.position));
+                if(tex.GetPixel(x + (int)Difference.x - 4,y + (int)Difference.y) == Color.clear && tex.GetPixel(x + (int)Difference.x,y + (int)Difference.y) != Color.clear){
+                    tex.SetPixel(x + (int)Difference.x, y + (int)Difference.y, Color.white);
+
+                }
+                if(tex.GetPixel(x + (int)Difference.x,y + (int)Difference.y - 4) == Color.clear && tex.GetPixel(x + (int)Difference.x,y + (int)Difference.y) != Color.clear){
+                    tex.SetPixel(x + (int)Difference.x, y + (int)Difference.y, Color.white);
+
+                }
+
+                if(tex.GetPixel(x + (int)Difference.x + 1,y + (int)Difference.y) != Color.clear && tex.GetPixel(x + (int)Difference.x,y + (int)Difference.y) == Color.clear){
+                    tex.SetPixel(x + (int)Difference.x, y + (int)Difference.y, Color.white);
+
+                }
+                if(tex.GetPixel(x + (int)Difference.x,y + (int)Difference.y + 1) != Color.clear && tex.GetPixel(x + (int)Difference.x,y + (int)Difference.y) == Color.clear){
+                    tex.SetPixel(x + (int)Difference.x, y + (int)Difference.y, Color.white);
+
+                }
+               
+            }
+           
+        }
+        tex.Apply();
+        //return input;
+    }
+
 
     // Update is called once per frame
     void FixedUpdate()
@@ -35,48 +146,4 @@ public class State : MonoBehaviour
         
     }
 
-    public void InitVectorDrawers()
-    {
-        
-        for(int p = 0; p < collider.Length; p++){
-        
-        
-            GameObject g = new GameObject();
-            rederobjs.Add(g);
-            g.transform.parent = transform;
-            
-            LineRenderer lr = g.AddComponent(typeof(LineRenderer)) as LineRenderer;
-            lr.widthMultiplier = 0.05f;
-            lr.material = LineMat;
-            lr.loop = true;
-            Drawers.Add(lr);
-            
-
-        
-        }
-        
-    }
-
-    public void RenderLines()
-    {
-        PhysicsShapeGroup2D phys = new PhysicsShapeGroup2D();
-        for(int p = 0; p < collider.Length; p++){
-        
-        collider[p].GetShapes(phys);
-        Vector2 xAxis = new Vector2(Mathf.Cos(rb.rotation * Mathf.Deg2Rad), Mathf.Sin(rb.rotation * Mathf.Deg2Rad));
-        Vector2 yAxis = new Vector2(-1 * xAxis.y, xAxis.x);
-        
-            List<Vector2> vectors2 = new List<Vector2>();
-            vectors2 = points;
-            //phys.GetShapeVertices(0, vectors2);
-            Drawers[p].positionCount = vectors2.Count;
-            Drawers[p].endColor = colour;
-            Drawers[p].startColor = colour;
-            Drawers[p].sortingOrder = 3 + p;
-            for(int q = 0; q < vectors2.Count; q++)
-            {
-            Drawers[p].SetPosition(q, new Vector3(vectors2[q].x * xAxis.x + vectors2[q].y *yAxis.x,vectors2[q].x * xAxis.y + vectors2[q].y*yAxis.y,0) + transform.position);
-            }  
-        }
-    }
 }
