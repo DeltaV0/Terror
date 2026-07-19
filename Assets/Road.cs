@@ -38,9 +38,19 @@ public class Road : MonoBehaviour
         if(Nation.me.hoverState != null && (Nation.me.hoverState == start || Nation.me.hoverState == end))
         {
             road.sortingOrder = 65;
+            transform.SetParent(Nation.me.hoverState.transform);
+            transform.localScale = new Vector3(1, 1, 1);
+            road.widthMultiplier = Mathf.Lerp(road.widthMultiplier, 0.02f * tier * 3f, 0.1f);
+
         } else
         {
             road.sortingOrder = 63;
+            transform.SetParent(null);
+            transform.localScale = new Vector3(1, 1, 1);
+            transform.position = new Vector3(0, 0, 0);
+            road.widthMultiplier = Mathf.Lerp(road.widthMultiplier, 0.02f * tier, 0.1f);
+
+
         }
     }
 }

@@ -39,6 +39,8 @@ public class State : MonoBehaviour
 
     public bool selected;
 
+    public SpriteRenderer[] sprRenders;
+
   //  public List<Road> roads;
 
     //public Button button;
@@ -80,10 +82,15 @@ public class State : MonoBehaviour
             c = new Color(0, 0.1f ,0, 1f);
 
         }
+        
     }
 
     public void MoveToFront(){
         spriteR.sortingOrder = 64;
+        for(int i = 0; i < sprRenders.Length; i++)
+        {
+            sprRenders[i].sortingOrder = 65;
+        }
         if (!outside)
         {
             Nation.me.hoverState = this;
@@ -94,6 +101,10 @@ public class State : MonoBehaviour
     public void MoveToBack(){
         spriteR.sortingOrder = 48 - ID;
         hovered = false;
+        for(int i = 0; i < sprRenders.Length; i++)
+        {
+            sprRenders[i].sortingOrder = 48 - ID + 1;
+        }
     }
 
     public void Select()
@@ -181,10 +192,29 @@ public class State : MonoBehaviour
         if (hasData)
         {
             spriteR.sprite = spr;
+            for(int i = 0; i < sprRenders.Length; i++)
+        {
+            sprRenders[i].color = spriteR.color;
+            sprRenders[i].sprite = spr;
+            sprRenders[i].enabled = false;
+        }
             
         } else
         {
             spriteR.color = new Color(1, 1, 1, 0.0f);
+        }
+        
+        if(Random.Range(0f, 1f) < 0.25f)
+        {
+            sprRenders[0].enabled = true;
+        } else if(Random.Range(0f, 1f) < 0.25f && !outside)
+        {
+            sprRenders[1].enabled = true;
+        }
+        if(ID == 0)
+        {
+            sprRenders[0].enabled = false;
+            sprRenders[1].enabled = true;
         }
         
         collider = gameObject.AddComponent<PolygonCollider2D>();
@@ -228,10 +258,20 @@ public class State : MonoBehaviour
         if (hovered)
         {
             
-            transform.localScale = Vector3.Lerp(transform.localScale, new Vector3(normalSize * 1.5f, normalSize * 1.5f, 1), 0.1f);
+           // transform.localScale = Vector3.Lerp(transform.localScale, new Vector3(normalSize * 1.5f, normalSize * 1.5f, 1), 0.1f);
+            spriteR.color = Color.Lerp(spriteR.color, new Color(1, 0.5f, 0.5f), 0.1f);
+            for(int i = 0; i < sprRenders.Length; i++)
+            {
+                sprRenders[i].color = spriteR.color;
+            }
         } else
         {
-            transform.localScale = Vector3.Lerp(transform.localScale, new Vector3(normalSize * 1f, normalSize * 1f, 1), 0.1f);
+            spriteR.color = Color.Lerp(spriteR.color, new Color(1, 1f, 1f), 0.1f);
+            for(int i = 0; i < sprRenders.Length; i++)
+            {
+                sprRenders[i].color = spriteR.color;
+            }
+           // transform.localScale = Vector3.Lerp(transform.localScale, new Vector3(normalSize * 1f, normalSize * 1f, 1), 0.1f);
 
         }
         }
