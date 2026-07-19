@@ -39,7 +39,7 @@ public class State : MonoBehaviour
 
     public bool selected;
 
-    public List<Road> roads;
+  //  public List<Road> roads;
 
     //public Button button;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -86,6 +86,7 @@ public class State : MonoBehaviour
         spriteR.sortingOrder = 64;
         if (!outside)
         {
+            Nation.me.hoverState = this;
             hovered = true;
         }
     }

@@ -14,8 +14,11 @@ public class Road : MonoBehaviour
         tier = i;
         start = s;
         end = e;
+
+       // start.roads.Add(this);
+        //end.roads.Add(this);
         
-        road.widthMultiplier = 0.01f * (tier + 1);
+        road.widthMultiplier = 0.02f * tier;
 
         Vector2 midpoint = e.collider.ClosestPoint(start.transform.position);
 
@@ -30,8 +33,14 @@ public class Road : MonoBehaviour
 
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        
+        if(Nation.me.hoverState != null && (Nation.me.hoverState == start || Nation.me.hoverState == end))
+        {
+            road.sortingOrder = 65;
+        } else
+        {
+            road.sortingOrder = 63;
+        }
     }
 }

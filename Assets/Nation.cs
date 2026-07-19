@@ -16,6 +16,8 @@ public class Nation : MonoBehaviour
     public List<Road> roads;
 
     public State selectedState;
+
+    public State hoverState;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
