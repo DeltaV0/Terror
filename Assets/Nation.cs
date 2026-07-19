@@ -7,10 +7,15 @@ public class Nation : MonoBehaviour
     public List<State> states = new List<State>();
 
     public GameObject statePf;
+    public GameObject roadPf;
 
     public static Nation me;
 
     public Transform canvas;
+
+    public List<Road> roads;
+
+    public State selectedState;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -22,8 +27,8 @@ public class Nation : MonoBehaviour
             states[i].ID = i;
             states[i].outside = false;
             states[i].init();
-          g.transform.SetParent(canvas, true);
-            Debug.Log(i);
+            g.transform.SetParent(canvas, true);
+            //Debug.Log(i);
         }
 
         for(int i = 0; i < 8; i++)
@@ -36,7 +41,7 @@ public class Nation : MonoBehaviour
             states[i+ 16].init();
            g.transform.SetParent(canvas, true);
 
-            Debug.Log(i + "a");
+           // Debug.Log(i + "a");
 
         }
 
@@ -50,7 +55,7 @@ public class Nation : MonoBehaviour
             states[i+ 24].init();
             g.transform.SetParent(canvas, true);
 
-            Debug.Log(i + "b");
+           // Debug.Log(i + "b");
         }
         /*for(int i = 0; i < states.Count; i++)
         {
@@ -58,6 +63,44 @@ public class Nation : MonoBehaviour
             states[i].RenderLines();
         }*/
         GraphicsRenderer.me.initGraphics();
+    }
+
+    public void ConnectRoads()
+    {
+        for(int i = 0; i < states.Count; i++)
+                {
+                    for(int q = 0; q < states[i].neighbors.Count; q++)
+                    {
+                if (!CheckForRoadConnection(states[i].neighbors[q], states[i]))
+                {
+                    Road r = Instantiate(roadPf, Vector3.zero, Quaternion.identity).GetComponent<Road>();
+                    r.Init(states[i], states[i].neighbors[q], Random.Range(0, 3));
+                    roads.Add(r);
+                }
+                    }
+
+                    for(int q = 0; q < states[i].neighborsOutside.Count; q++)
+                    {
+                if (!CheckForRoadConnection(states[i].neighborsOutside[q], states[i]) && Random.Range(0f, 1f) > 0.5f)
+                {
+                    Road r = Instantiate(roadPf, Vector3.zero, Quaternion.identity).GetComponent<Road>();
+                    r.Init(states[i], states[i].neighborsOutside[q], Random.Range(0, 3));
+                    roads.Add(r);
+                }
+                    }
+                }
+    }
+
+    public bool CheckForRoadConnection(State s, State s2)
+    {
+        for(int i = 0; i < roads.Count; i++)
+        {
+            if(roads[i].start == s && roads[i].end == s2 || roads[i].start == s2 && roads[i].end == s)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     public State getStateFromColour(Color col)

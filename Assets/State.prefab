@@ -176,6 +176,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2831887543029967791}
   - component: {fileID: 1306965481413896313}
+  - component: {fileID: -7832672483107864485}
   m_Layer: 5
   m_Name: State
   m_TagString: Untagged
@@ -215,17 +216,39 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd2937d4a78dbbe4a8c6d3ef250611cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::State
-  collider: []
-  colour: {r: 0, g: 0, b: 0, a: 0}
-  LineMat: {fileID: 0}
-  rederobjs: []
-  Drawers: []
-  rb: {fileID: 0}
-  points: []
+  collider: {fileID: 0}
   c: {r: 0, g: 0, b: 0, a: 0}
   ID: 0
   outside: 0
   tex: {fileID: 0}
   texSize: {x: 0, y: 0, z: 0, w: 0}
-  spriteR: {fileID: 507620084833792020}
-  button: {fileID: 0}
+  spriteR: {fileID: 0}
+  selected: 0
+  neighbors: []
+--- !u!50 &-7832672483107864485
+Rigidbody2D:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 431837404267259668}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0

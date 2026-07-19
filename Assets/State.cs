@@ -7,20 +7,11 @@ using UnityEngine.UI;
 public class State : MonoBehaviour
 {
     [Header("Drawers")]
-    public Collider2D[] collider;
-
-    public Color colour;
-
-    public Material LineMat;
-
-    public List<GameObject> rederobjs = new List<GameObject>();
-    public List<LineRenderer> Drawers = new List<LineRenderer>();
-
-    public Rigidbody2D rb;
-
-    public List<Vector2> points = new List<Vector2>();
+    public PolygonCollider2D collider;
 
     public Color c;
+
+    public bool hasData;
 
     [Header("Data")]
 
@@ -34,9 +25,23 @@ public class State : MonoBehaviour
 
     private Sprite spr;
 
-    public Image spriteR;
+    public SpriteRenderer spriteR;
 
-    public Button button;
+    private float normalSize;
+
+    public bool hovered;
+
+    public List<State> neighbors;
+
+    public List<State> neighborsOutside;
+
+    public SpriteMask mask;
+
+    public bool selected;
+
+    public List<Road> roads;
+
+    //public Button button;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
@@ -62,8 +67,8 @@ public class State : MonoBehaviour
         tex.filterMode = FilterMode.Point;
         tex = SetClearImage(tex);
         spr = Sprite.Create(tex, new Rect(0.0f, 0.0f, tex.width, tex.height), new Vector2(0.5f, 0.5f), 100.0f);
-        spriteR.sprite = spr;
-        spriteR.alphaHitTestMinimumThreshold = 0.75f;
+        
+       // spriteR.alphaHitTestMinimumThreshold = 0.75f;
 
         c = Color.red;
         if (outside)
@@ -78,7 +83,37 @@ public class State : MonoBehaviour
     }
 
     public void MoveToFront(){
-        transform.SetSiblingIndex(0);
+        spriteR.sortingOrder = 64;
+        if (!outside)
+        {
+            hovered = true;
+        }
+    }
+
+    public void MoveToBack(){
+        spriteR.sortingOrder = 48 - ID;
+        hovered = false;
+    }
+
+    public void Select()
+    {
+        if(!outside && hovered)
+        {
+            selected = !selected;
+            if(Nation.me.selectedState != null)
+            {
+                Nation.me.selectedState.selected = false;
+                Nation.me.selectedState = null;
+
+            }
+            if(selected)
+            {
+                Nation.me.selectedState = this;
+            } else
+            {
+                Nation.me.selectedState = null;
+            }
+        }
     }
 
     public void finishRendering(){
@@ -136,14 +171,69 @@ public class State : MonoBehaviour
            
         }
         tex.Apply();
+        mask.sprite = spr;
+        MoveToBack();
+        if (outside)
+        {
+            spriteR.color = new Color(1, 1, 1, 0.1f);
+        }
+        if (hasData)
+        {
+            spriteR.sprite = spr;
+            
+        } else
+        {
+            spriteR.color = new Color(1, 1, 1, 0.0f);
+        }
+        
+        collider = gameObject.AddComponent<PolygonCollider2D>();
+        normalSize = transform.localScale.x;
+        //selected = true;
+        
+
+        
         //return input;
+    }
+
+    public void GetNeighbors()
+    {
+     //   if (!outside)
+        //{
+            transform.localScale = new Vector3(normalSize*1.1f, normalSize*1.1f, 1f);
+            List<Collider2D> hit = new List<Collider2D>();
+            collider.Overlap(ContactFilter2D.noFilter, hit);
+            for(int i = 0; i < hit.Count; i++)
+            {
+                State s = hit[i].transform.gameObject.GetComponent<State>();
+                if(s != null && !s.outside && !outside)
+                {
+                    neighbors.Add(s);
+                } else if (s.outside || outside)
+                {
+                    neighborsOutside.Add(s);
+                }
+            
+            }
+            //selected = false;
+            transform.localScale = new Vector3(normalSize, normalSize, 1f);
+       // }
     }
 
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        
+        if(!outside){
+        if (hovered)
+        {
+            
+            transform.localScale = Vector3.Lerp(transform.localScale, new Vector3(normalSize * 1.5f, normalSize * 1.5f, 1), 0.1f);
+        } else
+        {
+            transform.localScale = Vector3.Lerp(transform.localScale, new Vector3(normalSize * 1f, normalSize * 1f, 1), 0.1f);
+
+        }
+        }
     }
 
 }
