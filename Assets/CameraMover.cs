@@ -5,6 +5,8 @@ public class CameraMover : MonoBehaviour
     public Vector2 screenPos;
 
     public Camera cam;
+
+    public bool moving;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -15,11 +17,35 @@ public class CameraMover : MonoBehaviour
     void FixedUpdate()
     {
        Vector3 worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-
+        if(worldPosition.y < -5.5f + transform.position.y)
+        {
+            if(!moving)
+            {
+                if(screenPos.y == 0){
+                screenPos = new Vector2(0, -2);
+                } else if(screenPos.y == 2){
+                screenPos = new Vector2(0, 0);
+                }
+            }
+            moving = true;
+        } else if(worldPosition.y > 5.5f + transform.position.y)
+        {
+            if(!moving)
+            {
+                if(screenPos.y == 0){
+                screenPos = new Vector2(0, 2);
+                } else if(screenPos.y == -2){
+                screenPos = new Vector2(0, 0);
+                }
+            }
+            moving = true;
+        } else {
+            moving = false;
+        }
        if(Nation.me.selectedState == null)
         {
-            transform.position = Vector3.Lerp(transform.position, Vector3.Lerp(Vector2.zero, new Vector3(worldPosition.x, worldPosition.y, -10), 0.1f), 0.1f);
-            cam.orthographicSize = Mathf.Lerp(cam.orthographicSize, 5f, 0.1f);
+            transform.position = Vector3.Lerp(transform.position, Vector3.Lerp(Vector2.zero + new Vector2(screenPos.x, screenPos.y * 6f), new Vector3(worldPosition.x, worldPosition.y, -10), 0.1f), 0.1f);
+            cam.orthographicSize = Mathf.Lerp(cam.orthographicSize, 6f, 0.1f);
                    
         } else
         {
