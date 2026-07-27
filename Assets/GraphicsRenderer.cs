@@ -64,9 +64,9 @@ public class GraphicsRenderer : MonoBehaviour
                 s.tex.SetPixel(x + (int)Difference.x, y + (int)Difference.y, color);
                 s.hasData = true;
                 
-                if(d < 0.1f){
-                    s.tex.SetPixel(x + (int)Difference.x, y + (int)Difference.y, Color.white);
-                }
+               //S if(d < 0.1f){
+                //   s.tex.SetPixel(x + (int)Difference.x, y + (int)Difference.y, Color.white);
+                //}
 
                 }
                 t.SetPixel(x, y, color);
@@ -92,7 +92,7 @@ public class GraphicsRenderer : MonoBehaviour
         Camera c = CameraMover.me.cam;
         Vector2 Temp = v;
 
-        Temp = new Vector2((((float)Temp.x/(float)1280)* 10) - 5, ((((float)Temp.y/(float)720) * 10) - 5) / (16f/9f));
+        Temp = new Vector2((((float)Temp.x/(float)1280)* 20) - 10, ((((float)Temp.y/(float)720) * 20) - 10) / (16f/9f));
         
         return Temp;
     }

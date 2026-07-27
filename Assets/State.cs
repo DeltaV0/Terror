@@ -15,6 +15,8 @@ public class State : MonoBehaviour
 
     public Vector2 screenPosDefault;
 
+    public Vector3 Centroid;
+
     [Header("Data")]
 
     public int ID;
@@ -49,6 +51,7 @@ public class State : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
+        
     }
 
     public void SetScreenPos()
@@ -109,6 +112,10 @@ public class State : MonoBehaviour
     public void MoveToBack(){
         spriteR.sortingOrder = 48 - ID;
         hovered = false;
+        if(Nation.me.hoverState == this)
+        {
+            Nation.me.hoverState = null;
+        }
         for(int i = 0; i < sprRenders.Length; i++)
         {
             sprRenders[i].sortingOrder = 48 - ID + 1;
@@ -138,58 +145,6 @@ public class State : MonoBehaviour
 
     public void finishRendering(){
         Vector2 v = new Vector2(1280f/2f, 720f/2f);
-        /*for (int y = tex.height; y > 0; y--)
-        {
-            for (int x = tex.width; x > 0; x--)
-            {
-                //Vector2 Difference = (v - (Vector2)Camera.main.WorldToScreenPoint(transform.position));
-                if(tex.GetPixel(x + 4,y) == Color.clear && tex.GetPixel(x,y) != Color.clear){
-                    tex.SetPixel(x, y, Color.white);
-
-                }
-                if(tex.GetPixel(x,y + 4) == Color.clear && tex.GetPixel(x,y) != Color.clear){
-                    tex.SetPixel(x, y, Color.white);
-
-                }
-
-                if(tex.GetPixel(x - 1,y) != Color.clear && tex.GetPixel(x,y) == Color.clear){
-                    tex.SetPixel(x, y, Color.white);
-
-                }
-                if(tex.GetPixel(x,y - 1) != Color.clear && tex.GetPixel(x,y) == Color.clear){
-                    tex.SetPixel(x, y, Color.white);
-
-                }
-               
-            }
-           
-        }
-        for (int y = 0; y < tex.height; y++)
-        {
-            for (int x = 0; x < tex.width; x++)
-            {
-                //Vector2 Difference = (v - (Vector2)Camera.main.WorldToScreenPoint(transform.position));
-                if(tex.GetPixel(x - 4,y) == Color.clear && tex.GetPixel(x,y) != Color.clear){
-                    tex.SetPixel(x, y, Color.white);
-
-                }
-                if(tex.GetPixel(x,y - 4) == Color.clear && tex.GetPixel(x,y) != Color.clear){
-                    tex.SetPixel(x, y, Color.white);
-
-                }
-
-                if(tex.GetPixel(x + 1,y) != Color.clear && tex.GetPixel(x,y) == Color.clear){
-                    tex.SetPixel(x, y, Color.white);
-
-                }
-                if(tex.GetPixel(x,y + 1) != Color.clear && tex.GetPixel(x,y) == Color.clear){
-                    tex.SetPixel(x, y, Color.white);
-
-                }
-               
-            }
-           
-        }*/
         tex.Apply();
         mask.sprite = spr;
         MoveToBack();
@@ -211,21 +166,23 @@ public class State : MonoBehaviour
         {
             spriteR.color = new Color(1, 1, 1, 0.0f);
         }
+        sprRenders[0].enabled = true;
         
-        if(Random.Range(0f, 1f) < 0.25f)
-        {
-            sprRenders[0].enabled = true;
-        } else if(Random.Range(0f, 1f) < 0.25f && !outside)
+        /*if(Random.Range(0f, 1f) < 0.25f)
         {
             sprRenders[1].enabled = true;
+        } else if(Random.Range(0f, 1f) < 0.25f && !outside)
+        {
+            sprRenders[2].enabled = true;
         }
         if(ID == 0)
         {
-            sprRenders[0].enabled = false;
-            sprRenders[1].enabled = true;
-        }
+            sprRenders[1].enabled = false;
+            sprRenders[2].enabled = true;
+        }*/
         
         collider = gameObject.AddComponent<PolygonCollider2D>();
+        Centroid = gameObject.GetComponent<Rigidbody2D>().worldCenterOfMass;
         normalSize = transform.localScale.x;
         //selected = true;
         
@@ -238,7 +195,7 @@ public class State : MonoBehaviour
     {
      //   if (!outside)
         //{
-            transform.localScale = new Vector3(normalSize*1.1f, normalSize*1.1f, 1f);
+            transform.localScale = new Vector3(normalSize*1.01f, normalSize*1.01f, 1f);
             List<Collider2D> hit = new List<Collider2D>();
             collider.Overlap(ContactFilter2D.noFilter, hit);
             for(int i = 0; i < hit.Count; i++)

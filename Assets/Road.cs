@@ -20,14 +20,14 @@ public class Road : MonoBehaviour
         
         road.widthMultiplier = 0.02f * tier;
 
-        Vector2 midpoint = e.collider.ClosestPoint(start.transform.position);
+        Vector2 midpoint = e.collider.ClosestPoint(start.Centroid);
 
-        road.SetPosition(0, start.transform.position);
-        road.SetPosition(4, end.transform.position);
+        road.SetPosition(0, start.Centroid);
+        road.SetPosition(4, end.Centroid);
         road.SetPosition(2, (Vector3)midpoint);
 
-        road.SetPosition(1, (Vector3)(Vector2.Lerp(start.transform.position, midpoint, 0.5f) + (Vector2.Distance(start.transform.position, midpoint) * Random.insideUnitCircle * 0.25f)));
-        road.SetPosition(3, (Vector3)(Vector2.Lerp(end.transform.position, midpoint, 0.5f) + (Vector2.Distance(end.transform.position, midpoint) * Random.insideUnitCircle * 0.25f)));
+        road.SetPosition(1, (Vector3)(Vector2.Lerp(start.Centroid, midpoint, 0.5f) + (Vector2.Distance(start.Centroid, midpoint) * Random.insideUnitCircle * 0.25f)));
+        road.SetPosition(3, (Vector3)(Vector2.Lerp(end.Centroid, midpoint, 0.5f) + (Vector2.Distance(end.Centroid, midpoint) * Random.insideUnitCircle * 0.25f)));
 
     }
 

@@ -54,7 +54,7 @@ public class CameraMover : MonoBehaviour
         } else
         {
                   
-                transform.position = Vector3.Lerp(transform.position, Vector3.Lerp(Nation.me.selectedState.transform.position, new Vector3(worldPosition.x, worldPosition.y, -10), 0.02f), 0.1f); 
+                transform.position = Vector3.Lerp(transform.position, Vector3.Lerp(Nation.me.selectedState.Centroid, new Vector3(worldPosition.x, worldPosition.y, -10), 0.02f), 0.1f); 
                    cam.orthographicSize = Mathf.Lerp(cam.orthographicSize, 2f, 0.1f);
         }
         transform.position = new Vector3(transform.position.x, transform.position.y, -10);
