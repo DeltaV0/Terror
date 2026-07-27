@@ -30,78 +30,49 @@ public class GraphicsRenderer : MonoBehaviour
        image.sprite = spr;
 
        Vector2 pixelPos = Vector2.zero;
+
+       Camera cam = CameraMover.me.cam;
+        Vector2 origin = new Vector2(1280f/2f, 720f/2f);
+        State s = null;
+        float d = 0;
+        Color color = new Color(0.1f, 0.25f, 0.75f, 1f);
        for (int y = 0; y < t.height; y++)
         {
             for (int x = 0; x < t.width; x++)
             {
-                pixelPos = Camera.main.ScreenToWorldPoint(new Vector3(x, y, 0));
-                Color color = new Color(0.1f, 0.25f, 0.75f, 1f);
-                color.a = 1;
-                float d = 4 * PN(x * 0.5f, y * 0.5f) + 3.5f;
-                State s = null;
+                pixelPos = ConvertToWorldPos(new Vector2(x, y));
+                color = new Color(0.1f, 0.25f, 0.75f, 1f);
+                d = 4 * PN(x * 0.5f, y * 0.5f) + 3.5f;
+                s = null;
+                Vector2 StatePos = Vector2.zero;
                 for(int i = 0; i < Nation.me.states.Count; i++)
                 {
-                    float distCurr = 1f * Chebyshev(pixelPos, (Vector2)Nation.me.states[i].transform.position + new Vector2(0.1f * PN(x * 1f, y * 1f), 0.1f * PN(x * 1f + 1000, y * 1f + 1000))) + 0.5f * Regular(pixelPos, (Vector2)Nation.me.states[i].transform.position + new Vector2(0.1f * PN(x * 1f, y * 1f), 0.1f * PN(x * 1f + 1000, y * 1f + 1000)));// + 2 * PN(x * 0.5f + 10000, y * 0.5f + 10000);//(pixelPos - (Vector2)Nation.me.states[i].transform.position).sqrMagnitude;
+                    StatePos = Nation.me.states[i].transform.position;
+                   // float distCurr = 1f * Chebyshev(pixelPos, StatePos + new Vector2(0.1f * PN(x * 1f, y * 1f), 0.1f * PN(x * 1f + 1000, y * 1f + 1000))) + 0.25f * Regular(pixelPos, StatePos + new Vector2(0.1f * PN(x * 1f, y * 1f), 0.1f * PN(x * 1f + 1000, y * 1f + 1000)));
+                    float distCurr = Regular(pixelPos, StatePos);
                     if(d > distCurr)
                     {
                         d = distCurr;
-                        //s = Nation.me.states[i];
-                        color = Nation.me.states[i].c;
                         s = Nation.me.states[i];
+                        color = s.c;
+                        
                         
                     }
                 }
                 if(s != null){
-                Vector2 Difference = ((Vector2)Camera.main.WorldToScreenPoint(Vector3.zero) - (Vector2)Camera.main.WorldToScreenPoint(s.transform.position));
+                Vector2 Difference = (origin - s.screenPosDefault);
                 s.tex.SetPixel(x + (int)Difference.x, y + (int)Difference.y, color);
                 s.hasData = true;
                 
                 if(d < 0.1f){
-                    s.tex.SetPixel(x + (int)Difference.x, y + (int)Difference.y, Color.white);
+                  //  s.tex.SetPixel(x + (int)Difference.x, y + (int)Difference.y, Color.white);
                 }
 
-                } else
-                {
-                    
                 }
-                t.SetPixel(x, y, color);
+                //t.SetPixel(x, y, color);
             }
         }
-        t.Apply(); 
-        /*for (int y = 0; y < t.height; y++)
-        {
-            for (int x = 0; x < t.width; x++)
-            {
-                //pixelPos = Camera.main.ScreenToWorldPoint(new Vector3(x, y, 0));
-                Color color = Color.white;
-                color.a = 1;
-                if(t.GetPixel(x+3, y) != t.GetPixel(x, y))
-                {
-                    t.SetPixel(x, y, color);
-                }
-                if(t.GetPixel(x, y+3) != t.GetPixel(x, y))
-                {
-                    t.SetPixel(x, y, color);
-                }
-                
-            }
-        }
-        t.Apply(); */
-
-        for (int y = 0; y < t.height; y++)
-        {
-            for (int x = 0; x < t.width; x++)
-            {
-                pixelPos = Camera.main.ScreenToWorldPoint(new Vector3(x, y, 0));
-                
-                State s = Nation.me.getStateFromColour(t.GetPixel(x, y));
-                if(s != null){
-                
-                }
-               // t.SetPixel(x, y, color);
-            }
-           // t.Apply(); 
-        }
+        //t.Apply(); 
 
         for(int i = 0; i < Nation.me.states.Count; i++)
                 {
@@ -114,6 +85,16 @@ public class GraphicsRenderer : MonoBehaviour
 
         Nation.me.ConnectRoads();
         
+    }
+
+    public Vector2 ConvertToWorldPos(Vector2 v)
+    {
+        Camera c = CameraMover.me.cam;
+        Vector2 Temp = v;
+
+        Temp = new Vector2((((float)Temp.x/(float)1280)* 10) - 5, ((((float)Temp.y/(float)720) * 10) - 5) / (16f/9f));
+        
+        return Temp;
     }
 
     private float PN(float x, float y)
@@ -133,7 +114,7 @@ public class GraphicsRenderer : MonoBehaviour
 
     private float Regular(Vector2 a, Vector2 b)
     {
-        return Vector2.Distance(a, b);
+        return (a-b).sqrMagnitude;
     }
 
     // Update is called once per frame

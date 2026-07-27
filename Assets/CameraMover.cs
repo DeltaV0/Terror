@@ -2,21 +2,25 @@ using UnityEngine;
 
 public class CameraMover : MonoBehaviour
 {
+    public static CameraMover me;
     public Vector2 screenPos;
 
     public Camera cam;
 
     public bool moving;
+
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        me = this;
         screenPos = Vector2.zero;
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-       Vector3 worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+       Vector3 worldPosition = cam.ScreenToWorldPoint(Input.mousePosition);
         if(worldPosition.y < -5.5f + transform.position.y)
         {
             if(!moving)

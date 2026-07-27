@@ -13,6 +13,8 @@ public class State : MonoBehaviour
 
     public bool hasData;
 
+    public Vector2 screenPosDefault;
+
     [Header("Data")]
 
     public int ID;
@@ -47,7 +49,12 @@ public class State : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
-        
+    }
+
+    public void SetScreenPos()
+    {
+        screenPosDefault = (Vector2)Camera.main.WorldToScreenPoint(transform.position);
+
     }
 
     public Texture2D SetClearImage(Texture2D input){
@@ -65,6 +72,7 @@ public class State : MonoBehaviour
 
     public void init()
     {
+        SetScreenPos();
         tex = new Texture2D(1280, 720); 
         tex.filterMode = FilterMode.Point;
         tex = SetClearImage(tex);
@@ -129,11 +137,12 @@ public class State : MonoBehaviour
     }
 
     public void finishRendering(){
+        Vector2 v = new Vector2(1280f/2f, 720f/2f);
         for (int y = tex.height; y > 0; y--)
         {
             for (int x = tex.width; x > 0; x--)
             {
-                Vector2 Difference = ((Vector2)Camera.main.WorldToScreenPoint(Vector3.zero) - (Vector2)Camera.main.WorldToScreenPoint(transform.position));
+                Vector2 Difference = (v - (Vector2)Camera.main.WorldToScreenPoint(transform.position));
                 if(tex.GetPixel(x + (int)Difference.x + 4,y + (int)Difference.y) == Color.clear && tex.GetPixel(x + (int)Difference.x,y + (int)Difference.y) != Color.clear){
                     tex.SetPixel(x + (int)Difference.x, y + (int)Difference.y, Color.white);
 
@@ -160,7 +169,7 @@ public class State : MonoBehaviour
         {
             for (int x = 0; x < tex.width; x++)
             {
-                Vector2 Difference = ((Vector2)Camera.main.WorldToScreenPoint(Vector3.zero) - (Vector2)Camera.main.WorldToScreenPoint(transform.position));
+                Vector2 Difference = (v - (Vector2)Camera.main.WorldToScreenPoint(transform.position));
                 if(tex.GetPixel(x + (int)Difference.x - 4,y + (int)Difference.y) == Color.clear && tex.GetPixel(x + (int)Difference.x,y + (int)Difference.y) != Color.clear){
                     tex.SetPixel(x + (int)Difference.x, y + (int)Difference.y, Color.white);
 
