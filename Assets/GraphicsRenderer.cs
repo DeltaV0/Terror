@@ -48,8 +48,8 @@ public class GraphicsRenderer : MonoBehaviour
                 for(int i = 0; i < Nation.me.states.Count; i++)
                 {
                     StatePos = Nation.me.states[i].transform.position;
-                   // float distCurr = 1f * Chebyshev(pixelPos, StatePos + new Vector2(0.1f * PN(x * 1f, y * 1f), 0.1f * PN(x * 1f + 1000, y * 1f + 1000))) + 0.25f * Regular(pixelPos, StatePos + new Vector2(0.1f * PN(x * 1f, y * 1f), 0.1f * PN(x * 1f + 1000, y * 1f + 1000)));
-                    float distCurr = Regular(pixelPos, StatePos);
+                    float distCurr = 1f * Chebyshev(pixelPos, StatePos + new Vector2(0.1f * PN(x * 1f, y * 1f), 0.1f * PN(x * 1f + 1000, y * 1f + 1000))) + 0.25f * Regular(pixelPos, StatePos + new Vector2(0.1f * PN(x * 1f, y * 1f), 0.1f * PN(x * 1f + 1000, y * 1f + 1000)));
+                   // float distCurr = Regular(pixelPos, StatePos);
                     if(d > distCurr)
                     {
                         d = distCurr;
@@ -65,14 +65,14 @@ public class GraphicsRenderer : MonoBehaviour
                 s.hasData = true;
                 
                 if(d < 0.1f){
-                  //  s.tex.SetPixel(x + (int)Difference.x, y + (int)Difference.y, Color.white);
+                    s.tex.SetPixel(x + (int)Difference.x, y + (int)Difference.y, Color.white);
                 }
 
                 }
-                //t.SetPixel(x, y, color);
+                t.SetPixel(x, y, color);
             }
         }
-        //t.Apply(); 
+        t.Apply(); 
 
         for(int i = 0; i < Nation.me.states.Count; i++)
                 {

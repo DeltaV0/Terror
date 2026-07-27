@@ -138,59 +138,58 @@ public class State : MonoBehaviour
 
     public void finishRendering(){
         Vector2 v = new Vector2(1280f/2f, 720f/2f);
-        for (int y = tex.height; y > 0; y--)
+        /*for (int y = tex.height; y > 0; y--)
         {
             for (int x = tex.width; x > 0; x--)
             {
-                Vector2 Difference = (v - (Vector2)Camera.main.WorldToScreenPoint(transform.position));
-                if(tex.GetPixel(x + (int)Difference.x + 4,y + (int)Difference.y) == Color.clear && tex.GetPixel(x + (int)Difference.x,y + (int)Difference.y) != Color.clear){
-                    tex.SetPixel(x + (int)Difference.x, y + (int)Difference.y, Color.white);
+                //Vector2 Difference = (v - (Vector2)Camera.main.WorldToScreenPoint(transform.position));
+                if(tex.GetPixel(x + 4,y) == Color.clear && tex.GetPixel(x,y) != Color.clear){
+                    tex.SetPixel(x, y, Color.white);
 
                 }
-                if(tex.GetPixel(x + (int)Difference.x,y + (int)Difference.y + 4) == Color.clear && tex.GetPixel(x + (int)Difference.x,y + (int)Difference.y) != Color.clear){
-                    tex.SetPixel(x + (int)Difference.x, y + (int)Difference.y, Color.white);
+                if(tex.GetPixel(x,y + 4) == Color.clear && tex.GetPixel(x,y) != Color.clear){
+                    tex.SetPixel(x, y, Color.white);
 
                 }
 
-                if(tex.GetPixel(x + (int)Difference.x - 1,y + (int)Difference.y) != Color.clear && tex.GetPixel(x + (int)Difference.x,y + (int)Difference.y) == Color.clear){
-                    tex.SetPixel(x + (int)Difference.x, y + (int)Difference.y, Color.white);
+                if(tex.GetPixel(x - 1,y) != Color.clear && tex.GetPixel(x,y) == Color.clear){
+                    tex.SetPixel(x, y, Color.white);
 
                 }
-                if(tex.GetPixel(x + (int)Difference.x,y + (int)Difference.y - 1) != Color.clear && tex.GetPixel(x + (int)Difference.x,y + (int)Difference.y) == Color.clear){
-                    tex.SetPixel(x + (int)Difference.x, y + (int)Difference.y, Color.white);
+                if(tex.GetPixel(x,y - 1) != Color.clear && tex.GetPixel(x,y) == Color.clear){
+                    tex.SetPixel(x, y, Color.white);
 
                 }
                
             }
            
         }
-        //combine at some point!!
         for (int y = 0; y < tex.height; y++)
         {
             for (int x = 0; x < tex.width; x++)
             {
-                Vector2 Difference = (v - (Vector2)Camera.main.WorldToScreenPoint(transform.position));
-                if(tex.GetPixel(x + (int)Difference.x - 4,y + (int)Difference.y) == Color.clear && tex.GetPixel(x + (int)Difference.x,y + (int)Difference.y) != Color.clear){
-                    tex.SetPixel(x + (int)Difference.x, y + (int)Difference.y, Color.white);
+                //Vector2 Difference = (v - (Vector2)Camera.main.WorldToScreenPoint(transform.position));
+                if(tex.GetPixel(x - 4,y) == Color.clear && tex.GetPixel(x,y) != Color.clear){
+                    tex.SetPixel(x, y, Color.white);
 
                 }
-                if(tex.GetPixel(x + (int)Difference.x,y + (int)Difference.y - 4) == Color.clear && tex.GetPixel(x + (int)Difference.x,y + (int)Difference.y) != Color.clear){
-                    tex.SetPixel(x + (int)Difference.x, y + (int)Difference.y, Color.white);
+                if(tex.GetPixel(x,y - 4) == Color.clear && tex.GetPixel(x,y) != Color.clear){
+                    tex.SetPixel(x, y, Color.white);
 
                 }
 
-                if(tex.GetPixel(x + (int)Difference.x + 1,y + (int)Difference.y) != Color.clear && tex.GetPixel(x + (int)Difference.x,y + (int)Difference.y) == Color.clear){
-                    tex.SetPixel(x + (int)Difference.x, y + (int)Difference.y, Color.white);
+                if(tex.GetPixel(x + 1,y) != Color.clear && tex.GetPixel(x,y) == Color.clear){
+                    tex.SetPixel(x, y, Color.white);
 
                 }
-                if(tex.GetPixel(x + (int)Difference.x,y + (int)Difference.y + 1) != Color.clear && tex.GetPixel(x + (int)Difference.x,y + (int)Difference.y) == Color.clear){
-                    tex.SetPixel(x + (int)Difference.x, y + (int)Difference.y, Color.white);
+                if(tex.GetPixel(x,y + 1) != Color.clear && tex.GetPixel(x,y) == Color.clear){
+                    tex.SetPixel(x, y, Color.white);
 
                 }
                
             }
            
-        }
+        }*/
         tex.Apply();
         mask.sprite = spr;
         MoveToBack();
