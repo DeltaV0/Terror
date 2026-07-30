@@ -40,7 +40,7 @@ public class Road : MonoBehaviour
             road.sortingOrder = 65;
             transform.SetParent(Nation.me.hoverState.transform);
             transform.localScale = new Vector3(1, 1, 1);
-            road.widthMultiplier = Mathf.Lerp(road.widthMultiplier, 0.02f * tier * 3f, 0.1f);
+            road.widthMultiplier = Mathf.Lerp(road.widthMultiplier, 0.025f * tier * 3f, 0.1f);
 
         } else
         {
@@ -48,7 +48,7 @@ public class Road : MonoBehaviour
             transform.SetParent(null);
             transform.localScale = new Vector3(1, 1, 1);
             transform.position = new Vector3(0, 0, 0);
-            road.widthMultiplier = Mathf.Lerp(road.widthMultiplier, 0.02f * tier, 0.1f);
+            road.widthMultiplier = Mathf.Lerp(road.widthMultiplier, 0.025f * tier, 0.1f);
 
 
         }

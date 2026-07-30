@@ -45,6 +45,10 @@ public class State : MonoBehaviour
 
     public SpriteRenderer[] sprRenders;
 
+    [Header("Info")]
+
+    public string Name;
+
   //  public List<Road> roads;
 
     //public Button button;
@@ -184,6 +188,8 @@ public class State : MonoBehaviour
         collider = gameObject.AddComponent<PolygonCollider2D>();
         Centroid = gameObject.GetComponent<Rigidbody2D>().worldCenterOfMass;
         normalSize = transform.localScale.x;
+
+        Name = "Sector " + NameGenerator.me.SectorNameGen[Random.Range(0, NameGenerator.me.SectorNameGen.Length)] + "-" + NameGenerator.me.SectorNameGen[Random.Range(0, NameGenerator.me.SectorNameGen.Length)] + "-" + NameGenerator.me.SectorNameGen[Random.Range(0, NameGenerator.me.SectorNameGen.Length)];
         //selected = true;
         
 
