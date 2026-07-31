@@ -111,7 +111,6 @@ public class State : MonoBehaviour
         tex = new Texture2D(1280, 720); 
         tex.filterMode = FilterMode.Point;
         tex = SetClearImage(tex);
-        spr = Sprite.Create(tex, new Rect(0.0f, 0.0f, tex.width, tex.height), new Vector2(0.5f, 0.5f), 100.0f);
         
        // spriteR.alphaHitTestMinimumThreshold = 0.75f;
 
@@ -170,6 +169,8 @@ public class State : MonoBehaviour
     public void finishRendering(){
         Vector2 v = new Vector2(1280f/2f, 720f/2f);
         tex.Apply();
+        spr = Sprite.Create(tex, new Rect(0.0f, 0.0f, tex.width, tex.height), new Vector2(0.5f, 0.5f), 100.0f, 0, SpriteMeshType.Tight);
+
         mask.sprite = spr;
         MoveToBack();
         if (outside)
@@ -191,13 +192,13 @@ public class State : MonoBehaviour
             for(int i = 0; i < sprRenders.Length; i++)
             {
             sprRenders[i].color = new Color(1, 1, 1, 0.5f);
-            sprRenders[i].sprite = spr;
+            sprRenders[i].sprite = spriteR.sprite;
             sprRenders[i].enabled = false;
             }
             for(int i = 0; i < parts.Length; i++)
             {
                 var shape = parts[i].shape;
-                shape.sprite = spr;
+                shape.sprite = spriteR.sprite;
                 //parts[i].enabled = false;
             }
             
@@ -226,13 +227,14 @@ public class State : MonoBehaviour
         sprRenders[0].color = spriteR.color;
         }
 
-        
+        if(hasData){
         if(Random.Range(0f, 1f) < 0.25f)
         {
             parts[0].Play();
-        } else if(Random.Range(0f, 1f) < 0.25f && !outside)
+        } else if(Random.Range(0f, 1f) < 0.25f)
         {
             parts[1].Play();
+        }
         }
         if(ID == 0)
         {
