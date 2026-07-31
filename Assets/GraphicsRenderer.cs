@@ -13,6 +13,13 @@ public class GraphicsRenderer : MonoBehaviour
 
     public Vector2Int resolution;
 
+    public SpriteRenderer NationRenderer;
+
+    public Texture2D t2;
+    private Sprite spr2;
+
+    public GameObject NeighborNationPf;
+
     public static GraphicsRenderer me;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -24,9 +31,18 @@ public class GraphicsRenderer : MonoBehaviour
 
     public void initGraphics()
     {
+        for(int i = 0; i < Nation.me.states.Count ; i++)
+                {
+                    Nation.me.states[i].beforeRendering();
+                }
                 t = new Texture2D(1280 / resolution.x, 720 / resolution.y); 
        t.filterMode = FilterMode.Point;
        spr = Sprite.Create(t, new Rect(0.0f, 0.0f, t.width, t.height), new Vector2(0.5f, 0.5f), 100.0f);
+
+       t2 = new Texture2D(1280 / resolution.x, 720 / resolution.y); 
+       t2.filterMode = FilterMode.Point;
+       spr2 = Sprite.Create(t2, new Rect(0.0f, 0.0f, t2.width, t2.height), new Vector2(0.5f, 0.5f), 100.0f);
+        NationRenderer.sprite = spr2;
        image.sprite = spr;
 
        Vector2 pixelPos = Vector2.zero;
@@ -40,6 +56,10 @@ public class GraphicsRenderer : MonoBehaviour
         {
             for (int x = 0; x < t.width; x++)
             {
+                for(int i = 0; i < Nation.me.NeighborNations.Count; i++)
+                {
+                    Nation.me.NeighborNations[i].t2.SetPixel(x, y, Color.clear);
+                }
                 pixelPos = ConvertToWorldPos(new Vector2(x, y));
                 color = new Color(0.1f, 0.25f, 0.75f, 1f);
                 d = 4 * PN(x * 0.5f, y * 0.5f) + 3.5f;
@@ -54,15 +74,23 @@ public class GraphicsRenderer : MonoBehaviour
                     {
                         d = distCurr;
                         s = Nation.me.states[i];
-                        color = s.c;
+                        color = Color.white;
                         
                         
                     }
                 }
+                t2.SetPixel(x, y, Color.clear);
                 if(s != null){
                 Vector2 Difference = (origin - s.screenPosDefault);
-                s.tex.SetPixel(x + (int)Difference.x, y + (int)Difference.y, color);
+                s.tex.SetPixel(x + (int)Difference.x, y + (int)Difference.y, Color.white);
                 s.hasData = true;
+                    if (!s.outside)
+                    {
+                        t2.SetPixel(x, y, Color.white);
+                    } else
+                    {
+                        s.memberOf.t2.SetPixel(x, y, Color.white);
+                    }
                 
                //S if(d < 0.1f){
                 //   s.tex.SetPixel(x + (int)Difference.x, y + (int)Difference.y, Color.white);
@@ -72,6 +100,11 @@ public class GraphicsRenderer : MonoBehaviour
                 t.SetPixel(x, y, color);
             }
         }
+        for(int i = 0; i < Nation.me.NeighborNations.Count; i++)
+                {
+                    Nation.me.NeighborNations[i].t2.Apply();
+                }
+        t2.Apply();
         t.Apply(); 
 
         for(int i = 0; i < Nation.me.states.Count; i++)

@@ -9,8 +9,6 @@ public class State : MonoBehaviour
     [Header("Drawers")]
     public PolygonCollider2D collider;
 
-    public Color c;
-
     public bool hasData;
 
     public Vector2 screenPosDefault;
@@ -45,6 +43,10 @@ public class State : MonoBehaviour
 
     public SpriteRenderer[] sprRenders;
 
+    public ForeignNation memberOf;
+
+    public ParticleSystem[] parts;
+
     [Header("Info")]
 
     public string Name;
@@ -61,7 +63,7 @@ public class State : MonoBehaviour
     public void SetScreenPos()
     {
         screenPosDefault = (Vector2)Camera.main.WorldToScreenPoint(transform.position);
-
+        
     }
 
     public Texture2D SetClearImage(Texture2D input){
@@ -77,9 +79,35 @@ public class State : MonoBehaviour
         return input;
     }
 
+    public void beforeRendering()
+    {
+        if(outside && memberOf == null)
+        {
+            ForeignNation n = Nation.me.NeighborNations[0];
+            foreach(ForeignNation q in Nation.me.NeighborNations)
+            {
+                    if(q.DistSqr(transform.position) < n.DistSqr(transform.position))
+                    {
+                        n = q;
+                    }
+            }
+            memberOf = n;
+            memberOf.subStates.Add(this);
+        }
+    }
+
     public void init()
     {
         SetScreenPos();
+        if(outside && (ID == 17 || ID == 19 || ID == 22 ))
+        {
+            GameObject g = Instantiate(GraphicsRenderer.me.NeighborNationPf, Vector3.zero, Quaternion.identity);
+            memberOf = g.GetComponent<ForeignNation>();
+            memberOf.pos = transform.position;
+            memberOf.Init();
+            memberOf.subStates.Add(this);
+            
+        }
         tex = new Texture2D(1280, 720); 
         tex.filterMode = FilterMode.Point;
         tex = SetClearImage(tex);
@@ -87,16 +115,8 @@ public class State : MonoBehaviour
         
        // spriteR.alphaHitTestMinimumThreshold = 0.75f;
 
-        c = Color.red;
-        if (outside)
-        {
-            c = new Color(0.1f, 0, 0, 1f);
-            //Debug.Log()
-        } else
-        {
-            c = new Color(0, 0.1f ,0, 1f);
-
-        }
+       // c = Color.red;
+        
         
     }
 
@@ -154,36 +174,73 @@ public class State : MonoBehaviour
         MoveToBack();
         if (outside)
         {
-            spriteR.color = new Color(1, 1, 1, 0.1f);
+            spriteR.color = memberOf.col;
+            //Debug.Log()
+        } else
+        {
+            spriteR.color = new Color(0, 0.1f, 0, 1f);
+
         }
+      /*  if (outside)
+        {
+            spriteR.color = new Color(1, 1, 1, 0.1f);
+        }*/
         if (hasData)
         {
             spriteR.sprite = spr;
             for(int i = 0; i < sprRenders.Length; i++)
-        {
-            sprRenders[i].color = spriteR.color;
+            {
+            sprRenders[i].color = new Color(1, 1, 1, 0.5f);
             sprRenders[i].sprite = spr;
             sprRenders[i].enabled = false;
-        }
+            }
+            for(int i = 0; i < parts.Length; i++)
+            {
+                var shape = parts[i].shape;
+                shape.sprite = spr;
+                //parts[i].enabled = false;
+            }
             
         } else
         {
-            spriteR.color = new Color(1, 1, 1, 0.0f);
+            spriteR.color = Color.clear;
+            for(int i = 0; i < sprRenders.Length; i++)
+            {
+            //sprRenders[i].color = new Color(1, 1, 1, 0.5f);
+            sprRenders[i].sprite = null;
+            sprRenders[i].enabled = false;
+            }
+            for(int i = 0; i < parts.Length; i++)
+            {
+                var shape = parts[i].shape;
+                shape.sprite = null;
+                //parts[i].enabled = false;
+            }
         }
+        if(!outside){
         sprRenders[0].enabled = true;
+        sprRenders[0].color = new Color(1f, 1f, 1f);
+        } else
+        {
+            sprRenders[0].enabled = true;
+        sprRenders[0].color = spriteR.color;
+        }
+
         
         if(Random.Range(0f, 1f) < 0.25f)
         {
-            sprRenders[1].enabled = true;
+            parts[0].Play();
         } else if(Random.Range(0f, 1f) < 0.25f && !outside)
         {
-            sprRenders[2].enabled = true;
+            parts[1].Play();
         }
         if(ID == 0)
         {
-            sprRenders[1].enabled = false;
-            sprRenders[2].enabled = true;
+            parts[0].Stop();
+            parts[1].Play();
         }
+
+        
         
         collider = gameObject.AddComponent<PolygonCollider2D>();
         Centroid = gameObject.GetComponent<Rigidbody2D>().worldCenterOfMass;
@@ -230,19 +287,19 @@ public class State : MonoBehaviour
         {
             
            // transform.localScale = Vector3.Lerp(transform.localScale, new Vector3(normalSize * 1.5f, normalSize * 1.5f, 1), 0.1f);
-            spriteR.color = Color.Lerp(spriteR.color, new Color(1, 0.5f, 0.5f), 0.1f);
-            sprRenders[0].color = spriteR.color;
-            for(int i = 1; i < sprRenders.Length; i++)
+            spriteR.color = Color.Lerp(spriteR.color, new Color(0.1f, 0.2f, 0.1f), 0.1f);
+            sprRenders[0].color = Color.Lerp(sprRenders[0].color, new Color(1f, 0.75f, 0.75f), 0.1f);
+           /* for(int i = 1; i < sprRenders.Length; i++)
             {
-                sprRenders[i].color = Color.Lerp(sprRenders[i].color, new Color(1, 0.5f, 0.5f, 0.1f), 0.1f);
-            }
+                sprRenders[i].color = Color.Lerp(sprRenders[i].color, new Color(1, 0.5f, 0.5f, 0.5f), 0.1f);
+            }*/
         } else
         {
-            spriteR.color = Color.Lerp(spriteR.color, new Color(1, 1f, 1f), 0.1f);
-            sprRenders[0].color = spriteR.color;
+            spriteR.color = Color.Lerp(spriteR.color, new Color(0, 0.1f, 0), 0.1f);
+            sprRenders[0].color = Color.Lerp(sprRenders[0].color, new Color(1f, 1f, 1f), 0.1f);
             for(int i = 1; i < sprRenders.Length; i++)
             {
-                sprRenders[i].color = Color.Lerp(sprRenders[i].color, new Color(1, 1f, 1f, 0.1f), 0.1f);
+                sprRenders[i].color = Color.Lerp(sprRenders[i].color, new Color(1, 1f, 1f, 0.5f), 0.1f);
             }
            // transform.localScale = Vector3.Lerp(transform.localScale, new Vector3(normalSize * 1f, normalSize * 1f, 1), 0.1f);
 

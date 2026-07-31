@@ -4,7 +4,13 @@ using System.Collections.Generic;
 
 public class Nation : MonoBehaviour
 {
+
+    public List<ForeignNation> NeighborNations = new List<ForeignNation>();
+
     public List<State> states = new List<State>();
+
+    public List<State> statesNation = new List<State>();
+
 
     public GameObject statePf;
     public GameObject roadPf;
@@ -25,6 +31,7 @@ public class Nation : MonoBehaviour
         for(int i = 0; i < 16; i++)
         {
             GameObject g = Instantiate(statePf, new Vector3(Random.Range(-2.5f, 2.5f), Random.Range(-2.5f, 2.5f), 0), Quaternion.identity);
+            statesNation.Add(g.GetComponent<State>());
             states.Add(g.GetComponent<State>());
             states[i].ID = i;
             states[i].outside = false;
@@ -46,6 +53,7 @@ public class Nation : MonoBehaviour
            // Debug.Log(i + "a");
 
         }
+       // states[17].init();
 
         for(int i = 0; i < 16; i++)
         {
@@ -105,7 +113,7 @@ public class Nation : MonoBehaviour
         return false;
     }
 
-    public State getStateFromColour(Color col)
+    /*public State getStateFromColour(Color col)
     {
         for(int i = 0; i < states.Count; i++)
         {
@@ -115,7 +123,7 @@ public class Nation : MonoBehaviour
             }
         }
         return null;
-    }
+    }*/
 
     // Update is called once per frame
     void Update()
