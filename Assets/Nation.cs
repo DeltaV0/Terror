@@ -38,6 +38,10 @@ public class Nation : MonoBehaviour
 
     public List<Rollout> nationalRollouts = new List<Rollout>();
 
+    public float money;
+
+    public float debt;
+
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -157,18 +161,15 @@ public class Nation : MonoBehaviour
                 if (!statesNation[Rand].CheckIfHasRollout(nationalRollouts[q].Name))
                 {
                     statesNation[Rand].thingsHere.Add(Rollout.NewRolloutFromRollout(nationalRollouts[q]));
-                    statesNation[Rand].doThingy();
-                    yield return new WaitForSeconds(0.1f);
-                } else
-                {
-                    if (statesNation[Rand].CheckIfHasAllPrerequisites(nationalRollouts[q]) && statesNation[Rand].GetRollout(nationalRollouts[q].Name).progress > 0)
-                    {
-                        statesNation[Rand].doThingy();
-                        statesNation[Rand].GetRollout(nationalRollouts[q].Name).progress--;
-                        yield return new WaitForSeconds(0.1f);
-                    }
+                    //statesNation[Rand].doThingy();
+                    //yield return new WaitForSeconds(0.1f);
                 }
         }
+        }
+        for(int i = 0; i < statesNation.Count; i++)
+        {
+            statesNation[i].DoTurn();
+            yield return new WaitForSeconds(0.1f);
         }
     }
 

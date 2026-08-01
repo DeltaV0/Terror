@@ -1976,8 +1976,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   name: wowzer!
   prereqs: []
-  cost: 2
-  time: 2
+  cost: 1
+  time: 5
   purchased: 0
 --- !u!1 &990543723
 GameObject:
@@ -3917,6 +3917,8 @@ MonoBehaviour:
   hoverState: {fileID: 0}
   buttons: []
   nationalRollouts: []
+  money: 100
+  debt: 10000
 --- !u!4 &1920152380
 Transform:
   m_ObjectHideFlags: 0

@@ -62,6 +62,28 @@ public class State : MonoBehaviour
         
     }
 
+    public void DoTurn()
+    {
+        int p = 3;
+        for(int i = 0; i < thingsHere.Count; i++)
+        {
+            if(thingsHere[i].progress > 0 && CheckIfHasAllPrerequisites(thingsHere[i]) && (Nation.me.money - thingsHere[i].cost) >= 0)
+            {
+                thingsHere[i].progress--;
+                Nation.me.money -= thingsHere[i].cost;
+                if(thingsHere[i].progress <= 0)
+                {
+                    doThingy();
+                }
+                p--;
+            }
+            if(p <= 0)
+            {
+                break;
+            }
+        }
+    }
+
     public void doThingy()
     {
         transform.localScale *= 1.1f;
