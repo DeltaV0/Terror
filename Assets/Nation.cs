@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using System.Collections;
 
 
 public class Nation : MonoBehaviour
@@ -144,6 +145,11 @@ public class Nation : MonoBehaviour
 
     public void nextTurn()
     {
+        StartCoroutine(TurnEnum());
+    }
+
+    public IEnumerator TurnEnum()
+    {
         for(int q = 0; q < nationalRollouts.Count; q++){
         for(int i = 0; i < 12; i++)
         {
@@ -151,11 +157,15 @@ public class Nation : MonoBehaviour
                 if (!statesNation[Rand].CheckIfHasRollout(nationalRollouts[q].Name))
                 {
                     statesNation[Rand].thingsHere.Add(Rollout.NewRolloutFromRollout(nationalRollouts[q]));
+                    statesNation[Rand].doThingy();
+                    yield return new WaitForSeconds(0.1f);
                 } else
                 {
                     if (statesNation[Rand].CheckIfHasAllPrerequisites(nationalRollouts[q]) && statesNation[Rand].GetRollout(nationalRollouts[q].Name).progress > 0)
                     {
+                        statesNation[Rand].doThingy();
                         statesNation[Rand].GetRollout(nationalRollouts[q].Name).progress--;
+                        yield return new WaitForSeconds(0.1f);
                     }
                 }
         }

@@ -62,6 +62,11 @@ public class State : MonoBehaviour
         
     }
 
+    public void doThingy()
+    {
+        transform.localScale *= 1.1f;
+    }
+
     public Rollout GetRollout(string s)
     {
         for(int i = 0; i < thingsHere.Count; i++)
@@ -323,6 +328,8 @@ public class State : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        transform.localScale = Vector3.Lerp(transform.localScale, new Vector3(normalSize * 1f, normalSize * 1f, 1), 0.1f);
+
         if(!outside){
         if (hovered)
         {
@@ -342,7 +349,6 @@ public class State : MonoBehaviour
             {
                 sprRenders[i].color = Color.Lerp(sprRenders[i].color, new Color(1, 1f, 1f, 0.5f), 0.1f);
             }
-           // transform.localScale = Vector3.Lerp(transform.localScale, new Vector3(normalSize * 1f, normalSize * 1f, 1), 0.1f);
 
         }
         }
