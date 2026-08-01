@@ -51,6 +51,8 @@ public class State : MonoBehaviour
 
     public string Name;
 
+    public List<Rollout> thingsHere = new List<Rollout>();
+
   //  public List<Road> roads;
 
     //public Button button;
@@ -58,6 +60,42 @@ public class State : MonoBehaviour
     void Awake()
     {
         
+    }
+
+    public Rollout GetRollout(string s)
+    {
+        for(int i = 0; i < thingsHere.Count; i++)
+        {
+            if (thingsHere[i].Name.Equals(s))
+            {
+                return thingsHere[i];
+            }
+        }
+        return null;
+    }
+
+    public bool CheckIfHasAllPrerequisites(Rollout r)
+    {
+        for(int i = 0; i < r.preRequisites.Count; i++)
+        {
+            if (!CheckIfHasRollout(r.preRequisites[i]))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public bool CheckIfHasRollout(string s)
+    {
+        for(int i = 0; i < thingsHere.Count; i++)
+        {
+            if (thingsHere[i].Name.Equals(s))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void SetScreenPos()
@@ -120,13 +158,14 @@ public class State : MonoBehaviour
     }
 
     public void MoveToFront(){
-        spriteR.sortingOrder = 64;
-        for(int i = 0; i < sprRenders.Length; i++)
-        {
-            sprRenders[i].sortingOrder = 65;
-        }
+        
         if (!outside)
         {
+            spriteR.sortingOrder = 64;
+            for(int i = 0; i < sprRenders.Length; i++)
+            {
+             sprRenders[i].sortingOrder = 65;
+            }
             Nation.me.hoverState = this;
             hovered = true;
         }

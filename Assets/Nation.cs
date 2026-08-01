@@ -1,15 +1,23 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 
 public class Nation : MonoBehaviour
 {
+    
+    public List<Notification> mail = new List<Notification>();
+
+    public List<string> mailQueue = new List<string>();
+
 
     public List<ForeignNation> NeighborNations = new List<ForeignNation>();
 
     public List<State> states = new List<State>();
 
     public List<State> statesNation = new List<State>();
+
+    public Transform MainCameraCanvas;
 
 
     public GameObject statePf;
@@ -24,10 +32,20 @@ public class Nation : MonoBehaviour
     public State selectedState;
 
     public State hoverState;
+
+    public Button[] buttons;
+
+    public List<Rollout> nationalRollouts = new List<Rollout>();
+
+    
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         me = this;
+        mailQueue.Add("default");
+        mailQueue.Add("default");
+        mailQueue.Add("default");
+
         for(int i = 0; i < 16; i++)
         {
             GameObject g = Instantiate(statePf, new Vector3(Random.Range(-2.5f, 2.5f), Random.Range(-2.5f, 2.5f), 0), Quaternion.identity);
@@ -113,17 +131,48 @@ public class Nation : MonoBehaviour
         return false;
     }
 
-    /*public State getStateFromColour(Color col)
+    public void nextMail()
     {
-        for(int i = 0; i < states.Count; i++)
+        if(mailQueue.Count > 0){
+        GameObject g = Instantiate(FindEventFromID(mailQueue[0]).gameObject, Vector3.zero, Quaternion.identity);
+        mailQueue.RemoveAt(0);
+        g.transform.SetParent(MainCameraCanvas, true);
+        g.transform.localScale = new Vector3(1, 1, 1);
+        g.transform.position = new Vector3(0, 0, 0);
+        }
+    }
+
+    public void nextTurn()
+    {
+        for(int q = 0; q < nationalRollouts.Count; q++){
+        for(int i = 0; i < 12; i++)
         {
-            if((Vector4)states[i].c == (Vector4)col)
+            int Rand = Random.Range(0, 16);
+                if (!statesNation[Rand].CheckIfHasRollout(nationalRollouts[q].Name))
+                {
+                    statesNation[Rand].thingsHere.Add(Rollout.NewRolloutFromRollout(nationalRollouts[q]));
+                } else
+                {
+                    if (statesNation[Rand].CheckIfHasAllPrerequisites(nationalRollouts[q]) && statesNation[Rand].GetRollout(nationalRollouts[q].Name).progress > 0)
+                    {
+                        statesNation[Rand].GetRollout(nationalRollouts[q].Name).progress--;
+                    }
+                }
+        }
+        }
+    }
+
+    public Notification FindEventFromID(string ID)
+    {
+        for(int i = 0; i < mail.Count; i++)
+        {
+            if (ID.Equals(mail[i].Identifier))
             {
-                return states[i];
+                return mail[i];
             }
         }
         return null;
-    }*/
+    }
 
     // Update is called once per frame
     void Update()
