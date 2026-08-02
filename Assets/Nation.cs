@@ -42,6 +42,8 @@ public class Nation : MonoBehaviour
 
     public float debt;
 
+    public float debtSpending;
+
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -98,6 +100,39 @@ public class Nation : MonoBehaviour
         GraphicsRenderer.me.initGraphics();
     }
 
+    public float GetTotalStateSpending()
+    {
+        float simMoney = money;
+        float f = 0;
+        for(int i = 0; i < statesNation.Count; i++)
+        {
+            f += statesNation[i].BaseSpending;
+            f += statesNation[i].CalculateSpending();
+        }
+        return f;
+    }
+
+    public float GetProjectStateSpending()
+    {
+        float f = 0;
+        for(int i = 0; i < statesNation.Count; i++)
+        {
+           // f += statesNation[i].BaseSpending;
+            f += statesNation[i].CalculateSpending();
+        }
+        return f;
+    }
+
+    public float GetTotalStateIncome()
+    {
+        float f = 0;
+        for(int i = 0; i < statesNation.Count; i++)
+        {
+            f += statesNation[i].income;
+            //f += statesNation[i].CalculateSpending();
+        }
+        return f;
+    }
     public void ConnectRoads()
     {
         for(int i = 0; i < states.Count; i++)
@@ -154,6 +189,12 @@ public class Nation : MonoBehaviour
 
     public IEnumerator TurnEnum()
     {
+        for(int i = 0; i < statesNation.Count; i++)
+        {
+            statesNation[i].DoTurn();
+            yield return new WaitForSeconds(0.1f);
+        }
+
         for(int q = 0; q < nationalRollouts.Count; q++){
         for(int i = 0; i < 12; i++)
         {
@@ -166,11 +207,17 @@ public class Nation : MonoBehaviour
                 }
         }
         }
+
+        debt -= debtSpending + money;
+        money = 0;
+
         for(int i = 0; i < statesNation.Count; i++)
         {
-            statesNation[i].DoTurn();
+            money += statesNation[i].income;
             yield return new WaitForSeconds(0.1f);
         }
+        
+        
     }
 
     public Notification FindEventFromID(string ID)

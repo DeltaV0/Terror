@@ -111,13 +111,15 @@ public class GraphicsRenderer : MonoBehaviour
                 {
                     Nation.me.states[i].finishRendering();
                 }
+
         for(int i = 0; i < Nation.me.states.Count; i++)
                 {
                     Nation.me.states[i].GetNeighbors();
                 }
 
         Nation.me.ConnectRoads();
-        
+        Nation.me.debtSpending = Mathf.Round(Nation.me.GetTotalStateIncome() * 0.20f);
+        Nation.me.debt = Mathf.Round(Nation.me.GetTotalStateIncome() * 25f);
     }
 
     public Vector2 ConvertToWorldPos(Vector2 v)

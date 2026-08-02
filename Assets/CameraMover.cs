@@ -15,6 +15,8 @@ public class CameraMover : MonoBehaviour
     public TMP_Text[] text;
 
     public Transform MouseHoverer;
+    public RectTransform MouseHovererRect;
+    public Transform Pointer;
 
     public string hoverText;
     public TMP_Text mousehoverText;
@@ -36,8 +38,16 @@ public class CameraMover : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        Cursor.visible = false;
         me = this;
         screenPos = Vector2.zero;
+    }
+
+    void Update()
+    {
+        Vector3 worldPosition = cam.ScreenToWorldPoint(Input.mousePosition);
+        Pointer.position = new Vector3(worldPosition.x, worldPosition.y, -2f);// - new Vector3(16, 16, 0);
+
     }
 
     // Update is called once per frame
@@ -46,7 +56,9 @@ public class CameraMover : MonoBehaviour
         mousehoverText.text = hoverText;
        Vector3 worldPosition = cam.ScreenToWorldPoint(Input.mousePosition);
        MouseHoverer.gameObject.SetActive(hoverEnabled);
-       MouseHoverer.localPosition = Vector3.Lerp(MouseHoverer.localPosition, Input.mousePosition - new Vector3(445 - 32, 145 * 2 - 16, 0), 0.1f);
+       MouseHoverer.position = Vector3.Lerp(MouseHoverer.position, new Vector3(worldPosition.x + 0.1f, worldPosition.y + 0.1f, -1f), 0.1f);// - new Vector3(MouseHovererRect.sizeDelta.x - 32, MouseHovererRect.sizeDelta.y * 2 - 16, 0), 0.1f);
+       MouseHovererRect.sizeDelta = mousehoverText.rectTransform.sizeDelta + new Vector2(30, 30); 
+       MouseHovererRect.GetChild(0).GetComponent<RectTransform>().sizeDelta = mousehoverText.rectTransform.sizeDelta + new Vector2(10, 10);
         if(worldPosition.y < -5.5f + transform.position.y && worldPosition.x > -6 && worldPosition.x < 6)
         {
             if(!moving)
@@ -88,7 +100,7 @@ public class CameraMover : MonoBehaviour
         {
                   text[0].text = Nation.me.selectedState.Name;
                 transform.position = Vector3.Lerp(transform.position, Vector3.Lerp(Nation.me.selectedState.Centroid, new Vector3(worldPosition.x, worldPosition.y, -10), 0.02f), 0.1f); 
-                   cam.orthographicSize = Mathf.Lerp(cam.orthographicSize, 2f, 0.1f);
+                   cam.orthographicSize = Mathf.Lerp(cam.orthographicSize, Nation.me.selectedState.col.bounds.extents.magnitude * 1.5f, 0.1f);
                  UI[0].localPosition = Vector3.Lerp(UI[0].localPosition, new Vector3(-480, 0, 0), 0.1f);
                 UI[1].localPosition = Vector3.Lerp(UI[1].localPosition, new Vector3(480, 0, 0), 0.1f);
                 UI[2].localPosition = Vector3.Lerp(UI[2].localPosition, new Vector3(0, 288, 0), 0.1f);

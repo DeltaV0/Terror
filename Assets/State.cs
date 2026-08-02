@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class State : MonoBehaviour
 {
     [Header("Drawers")]
-    public PolygonCollider2D collider;
+    public PolygonCollider2D col;
 
     public bool hasData;
 
@@ -53,6 +53,15 @@ public class State : MonoBehaviour
 
     public List<Rollout> thingsHere = new List<Rollout>();
 
+    public float income;
+
+    public int size;
+
+    public float BaseSpending;
+    public float ExtraSpending;
+
+    //public float income;
+
   //  public List<Road> roads;
 
     //public Button button;
@@ -62,8 +71,32 @@ public class State : MonoBehaviour
         
     }
 
+    public float CalculateSpending()
+    {
+        float simMoney = Nation.me.GetTotalStateIncome();
+        simMoney -= BaseSpending;
+        float f = 0;
+        int p = 3;
+        for(int i = 0; i < thingsHere.Count; i++)
+        {
+            if(thingsHere[i].progress > 0 && CheckIfHasAllPrerequisites(thingsHere[i]) && (simMoney - thingsHere[i].cost) >= 0)
+            {
+               // thingsHere[i].progress--;
+                simMoney -= thingsHere[i].cost;
+                f += thingsHere[i].cost;
+                p--;
+            }
+            if(p <= 0)
+            {
+                break;
+            }
+        }
+        return f;
+    }
+
     public void DoTurn()
     {
+        Nation.me.money -= BaseSpending;
         int p = 3;
         for(int i = 0; i < thingsHere.Count; i++)
         {
@@ -177,6 +210,7 @@ public class State : MonoBehaviour
         tex.filterMode = FilterMode.Point;
         tex = SetClearImage(tex);
         
+        
        // spriteR.alphaHitTestMinimumThreshold = 0.75f;
 
        // c = Color.red;
@@ -239,6 +273,7 @@ public class State : MonoBehaviour
 
         mask.sprite = spr;
         MoveToBack();
+        
         if (outside)
         {
             spriteR.color = memberOf.col;
@@ -248,13 +283,22 @@ public class State : MonoBehaviour
             spriteR.color = new Color(0, 0.1f, 0, 1f);
 
         }
-      /*  if (outside)
-        {
-            spriteR.color = new Color(1, 1, 1, 0.1f);
-        }*/
+        /*  if (outside)
+          {
+              spriteR.color = new Color(1, 1, 1, 0.1f);
+
+          }*/
         if (hasData)
         {
             spriteR.sprite = spr;
+        }
+        
+            col = gameObject.AddComponent<PolygonCollider2D>();
+            Centroid = gameObject.GetComponent<Rigidbody2D>().worldCenterOfMass;
+
+        if (hasData)
+        {
+            
             for(int i = 0; i < sprRenders.Length; i++)
             {
             sprRenders[i].color = new Color(1, 1, 1, 0.5f);
@@ -265,6 +309,17 @@ public class State : MonoBehaviour
             {
                 var shape = parts[i].shape;
                 shape.sprite = spriteR.sprite;
+                shape.texture = tex;
+                shape.textureColorAffectsParticles = false;
+                shape.textureClipThreshold = 0.5f;
+                shape.textureAlphaAffectsParticles = false;
+                shape.textureBilinearFiltering = false;
+
+                var em = parts[i].emission;
+                em.SetBursts(
+                    new ParticleSystem.Burst[]{
+                        new ParticleSystem.Burst(0f, col.bounds.extents.magnitude * 10f)
+                    });
                 //parts[i].enabled = false;
             }
             
@@ -281,41 +336,61 @@ public class State : MonoBehaviour
             {
                 var shape = parts[i].shape;
                 shape.sprite = null;
+
+                
                 //parts[i].enabled = false;
             }
         }
+        size = 1;
         if(!outside){
         sprRenders[0].enabled = true;
         sprRenders[0].color = new Color(1f, 1f, 1f);
         } else
         {
             sprRenders[0].enabled = true;
-        sprRenders[0].color = spriteR.color;
+            sprRenders[0].color = spriteR.color;
         }
 
         if(hasData){
         if(Random.Range(0f, 1f) < 0.25f)
         {
             parts[0].Play();
+            size = 0;
         } else if(Random.Range(0f, 1f) < 0.25f)
         {
-            parts[1].Play();
-        }
+            if(Random.Range(0f, 1f) < 0.25f)
+            {
+                size = 3;
+                parts[3].Play();
+            } else
+            {
+                size = 2;
+                parts[2].Play();    
+            }
+            
+        } else
+            {
+                parts[1].Play();
+            }
         }
         if(ID == 0)
         {
             parts[0].Stop();
-            parts[1].Play();
+            parts[1].Stop();
+            parts[2].Stop();
+            parts[3].Play();
+            size = 3;
         }
 
         
         
-        collider = gameObject.AddComponent<PolygonCollider2D>();
-        Centroid = gameObject.GetComponent<Rigidbody2D>().worldCenterOfMass;
+        
         normalSize = transform.localScale.x;
 
         Name = "Sector " + NameGenerator.me.SectorNameGen[Random.Range(0, NameGenerator.me.SectorNameGen.Length)] + "-" + NameGenerator.me.SectorNameGen[Random.Range(0, NameGenerator.me.SectorNameGen.Length)] + "-" + NameGenerator.me.SectorNameGen[Random.Range(0, NameGenerator.me.SectorNameGen.Length)];
         //selected = true;
+        BaseSpending = 3 + size;
+        income = 1 + (size * 4);
         
 
         
@@ -328,7 +403,7 @@ public class State : MonoBehaviour
         //{
             transform.localScale = new Vector3(normalSize*1.01f, normalSize*1.01f, 1f);
             List<Collider2D> hit = new List<Collider2D>();
-            collider.Overlap(ContactFilter2D.noFilter, hit);
+            col.Overlap(ContactFilter2D.noFilter, hit);
             for(int i = 0; i < hit.Count; i++)
             {
                 State s = hit[i].transform.gameObject.GetComponent<State>();
@@ -363,8 +438,9 @@ public class State : MonoBehaviour
             {
                 sprRenders[i].color = Color.Lerp(sprRenders[i].color, new Color(1, 0.5f, 0.5f, 0.5f), 0.1f);
             }*/
-        } else
+        } else if(Nation.me.selectedState != this)
         {
+            MoveToBack();
             spriteR.color = Color.Lerp(spriteR.color, new Color(0, 0.1f, 0), 0.1f);
             sprRenders[0].color = Color.Lerp(sprRenders[0].color, new Color(1f, 1f, 1f), 0.1f);
             for(int i = 1; i < sprRenders.Length; i++)
@@ -372,7 +448,16 @@ public class State : MonoBehaviour
                 sprRenders[i].color = Color.Lerp(sprRenders[i].color, new Color(1, 1f, 1f, 0.5f), 0.1f);
             }
 
-        }
+        } else
+            {
+               spriteR.color = Color.Lerp(spriteR.color, new Color(0.2f, 0.4f, 0.2f), 0.1f);
+                sprRenders[0].color = Color.Lerp(sprRenders[0].color, new Color(1f, 0.5f, 0.5f), 0.1f); 
+                spriteR.sortingOrder = 64;
+                    for(int i = 0; i < sprRenders.Length; i++)
+                    {
+                        sprRenders[i].sortingOrder = 65;
+                    }
+            }
         }
     }
 

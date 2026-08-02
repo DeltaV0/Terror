@@ -20,7 +20,7 @@ public class Road : MonoBehaviour
         
         road.widthMultiplier = 0.02f * tier;
 
-        Vector2 midpoint = e.collider.ClosestPoint(start.Centroid);
+        Vector2 midpoint = e.col.ClosestPoint(start.Centroid);
 
         road.SetPosition(0, start.Centroid);
         road.SetPosition(4, end.Centroid);
@@ -35,19 +35,19 @@ public class Road : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        if(Nation.me.hoverState != null && (Nation.me.hoverState == start || Nation.me.hoverState == end))
+        if((Nation.me.hoverState != null && (Nation.me.hoverState == start || Nation.me.hoverState == end)) || (Nation.me.selectedState != null && (Nation.me.selectedState == start || Nation.me.selectedState == end)))
         {
             road.sortingOrder = 65;
-            transform.SetParent(Nation.me.hoverState.transform);
-            transform.localScale = new Vector3(1, 1, 1);
+          //  transform.SetParent(Nation.me.hoverState.transform);
+           // transform.localScale = new Vector3(1, 1, 1);
             road.widthMultiplier = Mathf.Lerp(road.widthMultiplier, 0.025f * tier * 3f, 0.1f);
 
         } else
         {
             road.sortingOrder = 63;
-            transform.SetParent(null);
-            transform.localScale = new Vector3(1, 1, 1);
-            transform.position = new Vector3(0, 0, 0);
+          //  transform.SetParent(null);
+           // transform.localScale = new Vector3(1, 1, 1);
+          //  transform.position = new Vector3(0, 0, 0);
             road.widthMultiplier = Mathf.Lerp(road.widthMultiplier, 0.025f * tier, 0.1f);
 
 
