@@ -23,6 +23,7 @@ public class Nation : MonoBehaviour
 
     public GameObject statePf;
     public GameObject roadPf;
+    public GameObject textpf;
 
     public static Nation me;
 
@@ -43,6 +44,9 @@ public class Nation : MonoBehaviour
     public float debt;
 
     public float debtSpending;
+
+    public float[] partyPopularityAmounts = {25f, 50f, 25f}; //liberal, center, conservative
+    public float[] satasfaction = {20f, 50f, 20f}; //percent populatity (how much they like you)
 
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -191,6 +195,12 @@ public class Nation : MonoBehaviour
     {
         for(int i = 0; i < statesNation.Count; i++)
         {
+            statesNation[i].SubtractBaseSpendingCosts();
+            yield return new WaitForSeconds(0.05f);
+        }
+
+        for(int i = 0; i < statesNation.Count; i++)
+        {
             statesNation[i].DoTurn();
             yield return new WaitForSeconds(0.1f);
         }
@@ -213,7 +223,7 @@ public class Nation : MonoBehaviour
 
         for(int i = 0; i < statesNation.Count; i++)
         {
-            money += statesNation[i].income;
+            statesNation[i].GiveIncome();
             yield return new WaitForSeconds(0.1f);
         }
         

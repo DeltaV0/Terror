@@ -57,7 +57,7 @@ public class CameraMover : MonoBehaviour
        Vector3 worldPosition = cam.ScreenToWorldPoint(Input.mousePosition);
        MouseHoverer.gameObject.SetActive(hoverEnabled);
        MouseHoverer.position = Vector3.Lerp(MouseHoverer.position, new Vector3(worldPosition.x + 0.1f, worldPosition.y + 0.1f, -1f), 0.1f);// - new Vector3(MouseHovererRect.sizeDelta.x - 32, MouseHovererRect.sizeDelta.y * 2 - 16, 0), 0.1f);
-       MouseHovererRect.sizeDelta = mousehoverText.rectTransform.sizeDelta + new Vector2(30, 30); 
+       MouseHovererRect.sizeDelta = mousehoverText.rectTransform.sizeDelta + new Vector2(20, 20); 
        MouseHovererRect.GetChild(0).GetComponent<RectTransform>().sizeDelta = mousehoverText.rectTransform.sizeDelta + new Vector2(10, 10);
         if(worldPosition.y < -5.5f + transform.position.y && worldPosition.x > -6 && worldPosition.x < 6)
         {

@@ -12,26 +12,32 @@ public class Rollout : ScriptableObject
 
     public float cost;
 
+    public int Cprogress;
 
-    public void Init(string s, List<string> prereqs, int t, float c)
+    public float Ccost;
+
+
+    public void Init(string s, List<string> prereqs, int t, float c, int Ct, float Cc)
     {
+        Cprogress = Ct;
+        Ccost = Cc;
         cost = c;
         progress = t;
         preRequisites = prereqs;
         Name = s;
     }
 
-    public static Rollout NewRollout(string s, List<string> prereqs, int t, float c)
+    public static Rollout NewRollout(string s, List<string> prereqs, int t, float c, int Ct, float Cc)
     {
         Rollout r = ScriptableObject.CreateInstance<Rollout>();
-        r.Init(s, prereqs, t, c);
+        r.Init(s, prereqs, t, c, Ct, Cc);
         return r;
     }
 
     public static Rollout NewRolloutFromRollout(Rollout roll)
     {
         Rollout r = ScriptableObject.CreateInstance<Rollout>();
-        r.Init(roll.Name, roll.preRequisites, roll.progress, roll.cost);
+        r.Init(roll.Name, roll.preRequisites, roll.progress, roll.cost, roll.Cprogress, roll.Ccost);
         return r;
     }
 

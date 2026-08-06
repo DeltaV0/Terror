@@ -11,6 +11,9 @@ public class Technology : MonoBehaviour
     public float cost;
     public int time;
 
+    public int initTime;
+    public float initCost;
+
     public bool purchased;
 
     public string title;
@@ -51,6 +54,6 @@ public class Technology : MonoBehaviour
         purchased = true;
         PolicyManager.me.purchasedStuff.Add(name);
         PolicyManager.me.UpdateAllTechs();
-        Nation.me.nationalRollouts.Add(Rollout.NewRollout(name, prereqs, time, cost));
+        Nation.me.nationalRollouts.Add(Rollout.NewRollout(name, prereqs, time, cost, initTime, initCost));
     }
 }

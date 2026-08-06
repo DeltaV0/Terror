@@ -52,6 +52,7 @@ public class State : MonoBehaviour
     public string Name;
 
     public List<Rollout> thingsHere = new List<Rollout>();
+    public List<Rollout> Infrastructure = new List<Rollout>();
 
     public float income;
 
@@ -76,7 +77,7 @@ public class State : MonoBehaviour
         float simMoney = Nation.me.GetTotalStateIncome();
         simMoney -= BaseSpending;
         float f = 0;
-        int p = 3;
+        int p = 1;
         for(int i = 0; i < thingsHere.Count; i++)
         {
             if(thingsHere[i].progress > 0 && CheckIfHasAllPrerequisites(thingsHere[i]) && (simMoney - thingsHere[i].cost) >= 0)
@@ -94,18 +95,34 @@ public class State : MonoBehaviour
         return f;
     }
 
-    public void DoTurn()
+    public void SubtractBaseSpendingCosts()
     {
         Nation.me.money -= BaseSpending;
-        int p = 3;
+        TextParticle.NewParticle(1f, "<color=red>-$"  + BaseSpending + "b</color>", Centroid + (Vector3)Random.insideUnitCircle * 0.2f);
+    }
+
+    public void GiveIncome()
+    {
+        Nation.me.money += income;
+        TextParticle.NewParticle(1f, "<color=green>+$"  + income + "b</color>", Centroid + (Vector3)Random.insideUnitCircle * 0.2f);
+    }
+
+    public void DoTurn()
+    {
+        
+        int p = 1;
         for(int i = 0; i < thingsHere.Count; i++)
         {
             if(thingsHere[i].progress > 0 && CheckIfHasAllPrerequisites(thingsHere[i]) && (Nation.me.money - thingsHere[i].cost) >= 0)
             {
                 thingsHere[i].progress--;
                 Nation.me.money -= thingsHere[i].cost;
+                TextParticle.NewParticle(1f, "<color=red>-$"  + thingsHere[i].cost + "b</color>", Centroid + (Vector3)Random.insideUnitCircle * 0.2f);
                 if(thingsHere[i].progress <= 0)
                 {
+                    Infrastructure.Add(thingsHere[i]);
+                    thingsHere.RemoveAt(i);
+                    i--;
                     doThingy();
                 }
                 p--;
@@ -138,7 +155,7 @@ public class State : MonoBehaviour
     {
         for(int i = 0; i < r.preRequisites.Count; i++)
         {
-            if (!CheckIfHasRollout(r.preRequisites[i]))
+            if (!CheckIfFinishedRollout(r.preRequisites[i]))
             {
                 return false;
             }
@@ -146,11 +163,30 @@ public class State : MonoBehaviour
         return true;
     }
 
+    public bool CheckIfFinishedRollout(string s)
+    {
+        for(int i = 0; i < Infrastructure.Count; i++)
+        {
+            if (Infrastructure[i].Name.Equals(s))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public bool CheckIfHasRollout(string s)
     {
         for(int i = 0; i < thingsHere.Count; i++)
         {
             if (thingsHere[i].Name.Equals(s))
+            {
+                return true;
+            }
+        }
+        for(int i = 0; i < Infrastructure.Count; i++)
+        {
+            if (Infrastructure[i].Name.Equals(s))
             {
                 return true;
             }
@@ -318,7 +354,7 @@ public class State : MonoBehaviour
                 var em = parts[i].emission;
                 em.SetBursts(
                     new ParticleSystem.Burst[]{
-                        new ParticleSystem.Burst(0f, col.bounds.extents.magnitude * 10f)
+                        new ParticleSystem.Burst(0f, col.bounds.extents.magnitude * 10f * (ID == 0 ? 2 : 1))
                     });
                 //parts[i].enabled = false;
             }
@@ -356,7 +392,7 @@ public class State : MonoBehaviour
         {
             parts[0].Play();
             size = 0;
-        } else if(Random.Range(0f, 1f) < 0.25f)
+        } else if(Random.Range(0f, 1f) < 0.5f)
         {
             if(Random.Range(0f, 1f) < 0.25f)
             {
@@ -379,7 +415,7 @@ public class State : MonoBehaviour
             parts[1].Stop();
             parts[2].Stop();
             parts[3].Play();
-            size = 3;
+            size = 4;
         }
 
         
