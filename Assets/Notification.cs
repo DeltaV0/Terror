@@ -1,11 +1,20 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class Notification : MonoBehaviour
 {
     public string Identifier;
     private Vector3 offset;
 
+    public Button closeButton;
+    public bool canClose;
+
+    void Awake()
+    {
+       closeButton.interactable =  canClose;
+       Nation.me.openThings++;
+    }
     //public TMP_Text[] texts;
 
 
@@ -13,10 +22,13 @@ public class Notification : MonoBehaviour
     
     public void Close()
     {
+        Nation.me.openThings--;
+        UnHover();
         Destroy(gameObject);
     }
     public void StartDrag()
     {
+        transform.SetAsLastSibling();
         Vector3 worldPosition = CameraMover.me.cam.ScreenToWorldPoint(Input.mousePosition);
         offset = worldPosition - transform.position;
     }
@@ -30,6 +42,8 @@ public class Notification : MonoBehaviour
 
     public void BookMark()
     {
+        Nation.me.openThings--;
+        UnHover();
         Nation.me.mailQueue.Add(Identifier);
         Destroy(gameObject);   
     }

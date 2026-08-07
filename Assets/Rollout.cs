@@ -16,8 +16,15 @@ public class Rollout : ScriptableObject
 
     public float Ccost;
 
+    public float COTcost;
+    public bool national;
 
-    public void Init(string s, List<string> prereqs, int t, float c, int Ct, float Cc)
+    public State location;
+
+    //public float NationalSpendingIncrease;
+
+
+    public void Init(string s, List<string> prereqs, int t, float c, int Ct, float Cc, float COTC, bool nat)
     {
         Cprogress = Ct;
         Ccost = Cc;
@@ -25,20 +32,42 @@ public class Rollout : ScriptableObject
         progress = t;
         preRequisites = prereqs;
         Name = s;
+        national = nat;
+        COTcost = COTC;
     }
 
-    public static Rollout NewRollout(string s, List<string> prereqs, int t, float c, int Ct, float Cc)
+    public static Rollout NewRollout(string s, List<string> prereqs, int t, float c, int Ct, float Cc, float COTC, bool nat)
     {
         Rollout r = ScriptableObject.CreateInstance<Rollout>();
-        r.Init(s, prereqs, t, c, Ct, Cc);
+        r.Init(s, prereqs, t, c, Ct, Cc, COTC, nat);
         return r;
     }
 
     public static Rollout NewRolloutFromRollout(Rollout roll)
     {
         Rollout r = ScriptableObject.CreateInstance<Rollout>();
-        r.Init(roll.Name, roll.preRequisites, roll.progress, roll.cost, roll.Cprogress, roll.Ccost);
+        r.Init(roll.Name, roll.preRequisites, roll.progress, roll.cost, roll.Cprogress, roll.Ccost, roll.COTcost, roll.national);
         return r;
+    }
+
+    public void Complete()
+    {
+        //state stuff up here
+        if(!national){
+            if(Name.Equals("Roads Rev"))
+            {
+                location.totalInfra += 0.1f;
+            }
+            if(Name.Equals("Railway Rev"))
+            {
+                location.totalInfra += 0.1f;
+            }
+        }
+        //national stuff down here
+        if(Name.Equals("Nuclear I"))
+            {
+                Nation.me.nationalSpendingBase += 0.1f;
+            }
     }
 
 

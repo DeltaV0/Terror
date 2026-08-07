@@ -120,6 +120,8 @@ public class GraphicsRenderer : MonoBehaviour
         Nation.me.ConnectRoads();
         Nation.me.debtSpending = Mathf.Round(Nation.me.GetTotalStateIncome() * 0.20f);
         Nation.me.debt = Mathf.Round(Nation.me.GetTotalStateIncome() * 25f);
+        Nation.me.nationalSpendingBase = Nation.me.debtSpending * 0.25f;
+        Nation.me.nextTurn();
     }
 
     public Vector2 ConvertToWorldPos(Vector2 v)

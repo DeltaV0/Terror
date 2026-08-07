@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using System.Collections;
+using TMPro;
 
 
 public class Nation : MonoBehaviour
@@ -10,7 +11,6 @@ public class Nation : MonoBehaviour
     public List<Notification> mail = new List<Notification>();
 
     public List<string> mailQueue = new List<string>();
-
 
     public List<ForeignNation> NeighborNations = new List<ForeignNation>();
 
@@ -36,26 +36,42 @@ public class Nation : MonoBehaviour
     public State hoverState;
 
     public Button[] buttons;
+    public TMP_Text[] text;
 
     public List<Rollout> nationalRollouts = new List<Rollout>();
 
     public float money;
 
+    private float moneyShown;
+
+    public float nationalSpendingExtra;
+    public float nationalSpendingBase;
+
     public float debt;
 
     public float debtSpending;
 
+    public bool doingTurnStuff;
+
+    public int openThings;
+
     public float[] partyPopularityAmounts = {25f, 50f, 25f}; //liberal, center, conservative
-    public float[] satasfaction = {20f, 50f, 20f}; //percent populatity (how much they like you)
+    public float[] satisfaction = {20f, 50f, 20f}; //percent populatity (how much they like you)
+
+    public float Corruption;
+    public float CorruptionDelta;
+
+    public int turn;
 
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        turn-=1;
+        CorruptionDelta = 1f;
         me = this;
-        mailQueue.Add("default");
-        mailQueue.Add("default");
-        mailQueue.Add("default");
+        mailQueue.Add("intro advisor");
+        mailQueue.Add("intro");
 
         for(int i = 0; i < 16; i++)
         {
@@ -102,17 +118,33 @@ public class Nation : MonoBehaviour
             states[i].RenderLines();
         }*/
         GraphicsRenderer.me.initGraphics();
+        
+    }
+
+    public float GetNationalSpending()
+    {
+        float f = 0;
+        foreach (Rollout r in nationalRollouts)
+        {
+            if(r.Cprogress > 0)
+            {
+                f+= r.COTcost;
+            }
+                
+        }
+        return f;
     }
 
     public float GetTotalStateSpending()
     {
-        float simMoney = money;
         float f = 0;
         for(int i = 0; i < statesNation.Count; i++)
         {
             f += statesNation[i].BaseSpending;
             f += statesNation[i].CalculateSpending();
         }
+        f += GetNationalSpending();
+        f += nationalSpendingBase;
         return f;
     }
 
@@ -124,6 +156,7 @@ public class Nation : MonoBehaviour
            // f += statesNation[i].BaseSpending;
             f += statesNation[i].CalculateSpending();
         }
+        f+= GetNationalSpending();
         return f;
     }
 
@@ -178,11 +211,11 @@ public class Nation : MonoBehaviour
     public void nextMail()
     {
         if(mailQueue.Count > 0){
-        GameObject g = Instantiate(FindEventFromID(mailQueue[0]).gameObject, Vector3.zero, Quaternion.identity);
+        GameObject g = Instantiate(FindEventFromID(mailQueue[0]).gameObject, new Vector3(Random.Range(-3f, 3f), Random.Range(-3f, 3f), 0), Quaternion.identity);
         mailQueue.RemoveAt(0);
         g.transform.SetParent(MainCameraCanvas, true);
         g.transform.localScale = new Vector3(1, 1, 1);
-        g.transform.position = new Vector3(0, 0, 0);
+        g.transform.position = new Vector3(Random.Range(-3f, 3f), Random.Range(-3f, 3f), 0);
         }
     }
 
@@ -193,40 +226,99 @@ public class Nation : MonoBehaviour
 
     public IEnumerator TurnEnum()
     {
-        for(int i = 0; i < statesNation.Count; i++)
-        {
-            statesNation[i].SubtractBaseSpendingCosts();
-            yield return new WaitForSeconds(0.05f);
-        }
+        nationalSpendingExtra = GetNationalSpending();
+        doingTurnStuff = true;
+        Corruption += CorruptionDelta;
+        Corruption = Mathf.Max(0, Corruption);
+       // CameraMover.me.targeting = true;
+        CameraMover.me.screenPos = new Vector2(0, 0);
+        selectedState = null;
+        
 
-        for(int i = 0; i < statesNation.Count; i++)
-        {
-            statesNation[i].DoTurn();
-            yield return new WaitForSeconds(0.1f);
-        }
+        
+        debt -= debtSpending + money;
+
+        yield return new WaitForSeconds(0.5f);
+        turn += 1;
 
         for(int q = 0; q < nationalRollouts.Count; q++){
+            if(!nationalRollouts[q].national){
         for(int i = 0; i < 12; i++)
         {
             int Rand = Random.Range(0, 16);
-                if (!statesNation[Rand].CheckIfHasRollout(nationalRollouts[q].Name))
+                if (!statesNation[Rand].CheckIfHasRollout(nationalRollouts[q].Name) && nationalRollouts[q].Cprogress <= 0)
                 {
                     statesNation[Rand].thingsHere.Add(Rollout.NewRolloutFromRollout(nationalRollouts[q]));
+                    statesNation[Rand].thingsHere[statesNation[Rand].thingsHere.Count - 1].location = statesNation[Rand];
                     //statesNation[Rand].doThingy();
                     //yield return new WaitForSeconds(0.1f);
                 }
         }
+            }
+        nationalRollouts[q].Cprogress--;
+        if(nationalRollouts[q].Cprogress <= 0 && nationalRollouts[q].national)
+            {
+                nationalRollouts[q].Complete();
+            }
         }
 
-        debt -= debtSpending + money;
+        
         money = 0;
 
         for(int i = 0; i < statesNation.Count; i++)
         {
             statesNation[i].GiveIncome();
-            yield return new WaitForSeconds(0.1f);
+            CameraMover.me.TargetPos = statesNation[i].Centroid;
+            yield return new WaitForSeconds(Random.Range(0f, 0.25f));
+        }
+
+        yield return new WaitForSeconds(0.5f);
+
+        for(int i = 0; i < statesNation.Count; i++)
+        {
+            statesNation[i].SubtractBaseSpendingCosts();
+            CameraMover.me.TargetPos = statesNation[i].Centroid;
+            yield return new WaitForSeconds(Random.Range(0f, 0.1f));
         }
         
+
+        
+        money -= nationalSpendingBase;
+
+        yield return new WaitForSeconds(0.5f);
+
+        money -= debtSpending;
+
+        yield return new WaitForSeconds(0.5f);
+
+        money -= nationalSpendingExtra;
+
+        for(int i = 0; i < statesNation.Count; i++)
+        {
+            if(statesNation[i].CanDoSomething()){
+            statesNation[i].DoTurn();
+            CameraMover.me.TargetPos = statesNation[i].Centroid;
+            yield return new WaitForSeconds(Random.Range(0f, 0.25f));
+            }
+        }
+
+        yield return new WaitForSeconds(0.5f);
+
+        
+        
+        //CameraMover.me.targeting = false;
+        doingTurnStuff = false;
+        selectedState = null;
+        PolicyManager.me.UpdateAllTechs();
+        CameraMover.me.screenPos = new Vector2(0, 0);
+        
+
+        while(mailQueue.Count > 0)
+        {
+            nextMail();
+            yield return new WaitForSeconds(0.1f);
+
+        }
         
     }
 
@@ -243,8 +335,61 @@ public class Nation : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        
+        moneyShown = Mathf.Round(Mathf.Lerp(moneyShown, money, 0.1f) * 1000f) / 1000f;
+        nationalSpendingBase = Mathf.Round(nationalSpendingBase * 1000f) / 1000f;
+         nationalSpendingExtra = Mathf.Round(nationalSpendingExtra * 1000f) / 1000f;
+        buttons[0].interactable = mailQueue.Count <= 0 && openThings <= 0 && !doingTurnStuff;
+         buttons[1].interactable = mailQueue.Count > 0 && !doingTurnStuff;
+         text[0].text = "x" + mailQueue.Count;
+         string str = "";
+        switch (turn % 12)
+        {
+            case 0:
+                str += "jan";
+                break;
+            case 1:
+                str += "feb";
+                break;
+            case 2:
+                str += "mar";
+                break;
+            case 3:
+                str += "apr";
+                break;
+            case 4:
+                str += "may";
+                break;
+            case 5:
+                str += "jun";
+                break;
+            case 6:
+                str += "jul";
+                break;
+            case 7:
+                str += "aug";
+                break;
+            case 8:
+                str += "sep";
+                break;
+            case 9:
+                str += "oct";
+                break;
+            case 10:
+                str += "nov";
+                break;
+            case 11:
+                str += "dec";
+                break;
+            default:
+                str += "?";
+                break;
+            }
+
+            str += " ";
+            str += ((turn / 12) + 2002) + "";
+          text[1].text = str;
+           text[2].text = "$" + moneyShown + "b";
     }
 }

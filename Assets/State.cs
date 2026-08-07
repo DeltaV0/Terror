@@ -59,6 +59,8 @@ public class State : MonoBehaviour
     public int size;
 
     public float BaseSpending;
+
+    public float totalInfra;
     public float ExtraSpending;
 
     //public float income;
@@ -74,7 +76,7 @@ public class State : MonoBehaviour
 
     public float CalculateSpending()
     {
-        float simMoney = Nation.me.GetTotalStateIncome();
+        float simMoney = Nation.me.money;
         simMoney -= BaseSpending;
         float f = 0;
         int p = 1;
@@ -98,13 +100,13 @@ public class State : MonoBehaviour
     public void SubtractBaseSpendingCosts()
     {
         Nation.me.money -= BaseSpending;
-        TextParticle.NewParticle(1f, "<color=red>-$"  + BaseSpending + "b</color>", Centroid + (Vector3)Random.insideUnitCircle * 0.2f);
+        TextParticle.NewParticle(1f, "<color=red>-$"  + BaseSpending + "b</color>", Centroid + (Vector3)Random.insideUnitCircle * 0.5f);
     }
 
     public void GiveIncome()
     {
         Nation.me.money += income;
-        TextParticle.NewParticle(1f, "<color=green>+$"  + income + "b</color>", Centroid + (Vector3)Random.insideUnitCircle * 0.2f);
+        TextParticle.NewParticle(1f, "<color=green>+$"  + income + "b</color>", Centroid + (Vector3)Random.insideUnitCircle * 0.5f);
     }
 
     public void DoTurn()
@@ -117,13 +119,14 @@ public class State : MonoBehaviour
             {
                 thingsHere[i].progress--;
                 Nation.me.money -= thingsHere[i].cost;
-                TextParticle.NewParticle(1f, "<color=red>-$"  + thingsHere[i].cost + "b</color>", Centroid + (Vector3)Random.insideUnitCircle * 0.2f);
+                TextParticle.NewParticle(1f, "<color=red>-$"  + thingsHere[i].cost + "b</color>", Centroid + (Vector3)Random.insideUnitCircle * 0.5f);
                 if(thingsHere[i].progress <= 0)
                 {
+                    thingsHere[i].Complete();
                     Infrastructure.Add(thingsHere[i]);
                     thingsHere.RemoveAt(i);
                     i--;
-                    doThingy();
+                    //doThingy();
                 }
                 p--;
             }
@@ -134,9 +137,9 @@ public class State : MonoBehaviour
         }
     }
 
-    public void doThingy()
+    public bool CanDoSomething()
     {
-        transform.localScale *= 1.1f;
+        return thingsHere.Count > 0;
     }
 
     public Rollout GetRollout(string s)
@@ -258,6 +261,7 @@ public class State : MonoBehaviour
         
         if (!outside)
         {
+            CameraMover.me.HoverOverSomething(Name);
             spriteR.sortingOrder = 64;
             for(int i = 0; i < sprRenders.Length; i++)
             {
@@ -269,10 +273,12 @@ public class State : MonoBehaviour
     }
 
     public void MoveToBack(){
+        
         spriteR.sortingOrder = 48 - ID;
         hovered = false;
         if(Nation.me.hoverState == this)
         {
+            CameraMover.me.StopHovering();
             Nation.me.hoverState = null;
         }
         for(int i = 0; i < sprRenders.Length; i++)
@@ -425,8 +431,9 @@ public class State : MonoBehaviour
 
         Name = "Sector " + NameGenerator.me.SectorNameGen[Random.Range(0, NameGenerator.me.SectorNameGen.Length)] + "-" + NameGenerator.me.SectorNameGen[Random.Range(0, NameGenerator.me.SectorNameGen.Length)] + "-" + NameGenerator.me.SectorNameGen[Random.Range(0, NameGenerator.me.SectorNameGen.Length)];
         //selected = true;
-        BaseSpending = 3 + size;
-        income = 1 + (size * 4);
+        BaseSpending = 3 + size + totalInfra;
+        income = 1 + ((size + totalInfra) * 4);
+        
         
 
         
@@ -462,6 +469,12 @@ public class State : MonoBehaviour
     void FixedUpdate()
     {
         transform.localScale = Vector3.Lerp(transform.localScale, new Vector3(normalSize * 1f, normalSize * 1f, 1), 0.1f);
+
+        BaseSpending = 3 + size + totalInfra;
+        income = 1 + ((size + totalInfra) * 4);
+
+        BaseSpending = Mathf.Round(BaseSpending * 1000f) / 1000f;
+        income = Mathf.Round(income * 1000f) / 1000f;
 
         if(!outside){
         if (hovered)

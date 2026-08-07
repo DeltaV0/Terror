@@ -13,6 +13,8 @@ public class Technology : MonoBehaviour
 
     public int initTime;
     public float initCost;
+    public float initCostOverTime;
+    public bool NationalOnly;
 
     public bool purchased;
 
@@ -27,6 +29,8 @@ public class Technology : MonoBehaviour
 
     public Image[] images;
 
+    public bool PreBought;
+
     void Start()
     {
         purchasable = false;
@@ -36,6 +40,10 @@ public class Technology : MonoBehaviour
             prereqs.Add(t.name);
         }
         PolicyManager.me.techs.Add(this);
+        if (PreBought)
+        {
+            Buy();
+        }
         PolicyManager.me.UpdateAllTechs();
     }
 
@@ -54,6 +62,7 @@ public class Technology : MonoBehaviour
         purchased = true;
         PolicyManager.me.purchasedStuff.Add(name);
         PolicyManager.me.UpdateAllTechs();
-        Nation.me.nationalRollouts.Add(Rollout.NewRollout(name, prereqs, time, cost, initTime, initCost));
+        Nation.me.nationalRollouts.Add(Rollout.NewRollout(name, prereqs, time, cost, initTime, initCost, initCostOverTime, NationalOnly));
+        Nation.me.money -= initCost;
     }
 }

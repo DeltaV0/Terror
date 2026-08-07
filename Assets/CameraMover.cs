@@ -22,6 +22,9 @@ public class CameraMover : MonoBehaviour
     public TMP_Text mousehoverText;
     public bool hoverEnabled;
 
+    public bool targeting;
+    public Vector3 TargetPos;
+
     public void HoverOverSomething(string s)
     {
         hoverEnabled = true;
@@ -59,6 +62,7 @@ public class CameraMover : MonoBehaviour
        MouseHoverer.position = Vector3.Lerp(MouseHoverer.position, new Vector3(worldPosition.x + 0.1f, worldPosition.y + 0.1f, -1f), 0.1f);// - new Vector3(MouseHovererRect.sizeDelta.x - 32, MouseHovererRect.sizeDelta.y * 2 - 16, 0), 0.1f);
        MouseHovererRect.sizeDelta = mousehoverText.rectTransform.sizeDelta + new Vector2(20, 20); 
        MouseHovererRect.GetChild(0).GetComponent<RectTransform>().sizeDelta = mousehoverText.rectTransform.sizeDelta + new Vector2(10, 10);
+       if(!Nation.me.doingTurnStuff){
         if(worldPosition.y < -5.5f + transform.position.y && worldPosition.x > -6 && worldPosition.x < 6)
         {
             if(!moving)
@@ -84,7 +88,12 @@ public class CameraMover : MonoBehaviour
         } else {
             moving = false;
         }
-       if(Nation.me.selectedState == null)
+       } else
+        {
+           moving = false; 
+        }
+        if(!targeting){
+       if(Nation.me.selectedState == null || Nation.me.doingTurnStuff)
         {
 
             transform.position = Vector3.Lerp(transform.position, Vector3.Lerp(Vector2.zero + new Vector2(screenPos.x, screenPos.y * 6f), new Vector3(worldPosition.x, worldPosition.y, -10), 0.1f), 0.1f);
@@ -94,6 +103,7 @@ public class CameraMover : MonoBehaviour
             UI[2].localPosition = Vector3.Lerp(UI[2].localPosition, new Vector3(0, 432, 0), 0.1f);
             UI[3].localPosition = Vector3.Lerp(UI[3].localPosition, new Vector3(0, -432, 0), 0.1f);
             UI[4].localPosition = Vector3.Lerp(UI[4].localPosition, new Vector3(-560, 288, 0), 0.1f);
+            UI[5].localPosition = Vector3.Lerp(UI[5].localPosition, new Vector3(-560, -350, 0), 0.1f);
 
                    
         } else
@@ -106,6 +116,18 @@ public class CameraMover : MonoBehaviour
                 UI[2].localPosition = Vector3.Lerp(UI[2].localPosition, new Vector3(0, 288, 0), 0.1f);
             UI[3].localPosition = Vector3.Lerp(UI[3].localPosition, new Vector3(0, -288, 0), 0.1f);
             UI[4].localPosition = Vector3.Lerp(UI[4].localPosition, new Vector3(-960, 576, 0), 0.1f);
+            UI[5].localPosition = Vector3.Lerp(UI[5].localPosition, new Vector3(-960, -576, 0), 0.1f);
+
+        }
+        } else
+        {
+            transform.position = Vector3.Lerp(transform.position, Vector3.zero, 0.01f);
+            cam.orthographicSize = Mathf.Lerp(cam.orthographicSize, 4f, 0.05f);
+            UI[0].localPosition = Vector3.Lerp(UI[0].localPosition, new Vector3(-820f, 0, 0), 0.1f);
+            UI[1].localPosition = Vector3.Lerp(UI[1].localPosition, new Vector3(820f, 0, 0), 0.1f);
+            UI[2].localPosition = Vector3.Lerp(UI[2].localPosition, new Vector3(0, 432, 0), 0.1f);
+            UI[3].localPosition = Vector3.Lerp(UI[3].localPosition, new Vector3(0, -432, 0), 0.1f);
+            UI[4].localPosition = Vector3.Lerp(UI[4].localPosition, new Vector3(-560, 288, 0), 0.1f);
 
         }
         transform.position = new Vector3(transform.position.x, transform.position.y, -10);
