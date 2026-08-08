@@ -10,7 +10,9 @@ public class Nation : MonoBehaviour
     
     public List<Notification> mail = new List<Notification>();
 
-    public List<string> mailQueue = new List<string>();
+    public List<Notification> mailQueue = new List<Notification>();
+
+    public List<string> seenEvents = new List<string>();
 
     public List<ForeignNation> NeighborNations = new List<ForeignNation>();
 
@@ -70,8 +72,9 @@ public class Nation : MonoBehaviour
         turn-=1;
         CorruptionDelta = 1f;
         me = this;
-        mailQueue.Add("intro advisor");
-        mailQueue.Add("intro");
+        AddToQueue("intro advisor");
+        AddToQueue("intro");
+
 
         for(int i = 0; i < 16; i++)
         {
@@ -137,26 +140,65 @@ public class Nation : MonoBehaviour
 
     public float GetTotalStateSpending()
     {
+        float sim = GetTotalStateIncome();
         float f = 0;
         for(int i = 0; i < statesNation.Count; i++)
         {
             f += statesNation[i].BaseSpending;
-            f += statesNation[i].CalculateSpending();
+            sim -= statesNation[i].BaseSpending;
         }
-        f += GetNationalSpending();
         f += nationalSpendingBase;
+        sim -= nationalSpendingBase;
+        f += GetNationalSpending();
+        sim -= GetNationalSpending();
+        for(int i = 0; i < statesNation.Count; i++)
+        {
+            f += statesNation[i].CalculateSpending(sim);
+            sim -= statesNation[i].CalculateSpending(sim);
+        }
+        
+        
         return f;
+    }
+
+    public Notification AddToQueue(string s)
+    {
+        
+        Notification n = FindEventFromID(s);
+        mailQueue.Add(n);
+        return n;
     }
 
     public float GetProjectStateSpending()
     {
+        float sim = GetTotalStateIncome();
         float f = 0;
         for(int i = 0; i < statesNation.Count; i++)
         {
            // f += statesNation[i].BaseSpending;
-            f += statesNation[i].CalculateSpending();
+            sim -= statesNation[i].BaseSpending;
         }
-        f+= GetNationalSpending();
+       // f += nationalSpendingBase;
+        sim -= nationalSpendingBase;
+        f += GetNationalSpending();
+        sim -= GetNationalSpending();
+        for(int i = 0; i < statesNation.Count; i++)
+        {
+           // f += statesNation[i].BaseSpending;
+            f += statesNation[i].CalculateSpending(sim); //only add this
+            sim -= statesNation[i].CalculateSpending(sim);
+        }
+        
+        return f;
+    }
+
+    public float GetTotalSupport()
+    {
+        float f = 0;
+        foreach(State s in statesNation)
+        {
+            f += s.localSupportLevel;
+        }
         return f;
     }
 
@@ -211,7 +253,7 @@ public class Nation : MonoBehaviour
     public void nextMail()
     {
         if(mailQueue.Count > 0){
-        GameObject g = Instantiate(FindEventFromID(mailQueue[0]).gameObject, new Vector3(Random.Range(-3f, 3f), Random.Range(-3f, 3f), 0), Quaternion.identity);
+        GameObject g = Instantiate(mailQueue[0].gameObject, new Vector3(Random.Range(-3f, 3f), Random.Range(-3f, 3f), 0), Quaternion.identity);
         mailQueue.RemoveAt(0);
         g.transform.SetParent(MainCameraCanvas, true);
         g.transform.localScale = new Vector3(1, 1, 1);
@@ -224,6 +266,19 @@ public class Nation : MonoBehaviour
         StartCoroutine(TurnEnum());
     }
 
+    public bool TrySpendMoney(float amt)
+    {
+        if(money - amt < 0)
+        {
+            return false;
+        }
+        else
+        {
+            money -= amt;
+            return true;
+        }
+    }
+
     public IEnumerator TurnEnum()
     {
         nationalSpendingExtra = GetNationalSpending();
@@ -233,17 +288,19 @@ public class Nation : MonoBehaviour
        // CameraMover.me.targeting = true;
         CameraMover.me.screenPos = new Vector2(0, 0);
         selectedState = null;
+
+        DataManager.me.UpdateCharts();
         
 
         
         debt -= debtSpending + money;
-
+        money = 0;
         yield return new WaitForSeconds(0.5f);
         turn += 1;
 
         for(int q = 0; q < nationalRollouts.Count; q++){
             if(!nationalRollouts[q].national){
-        for(int i = 0; i < 12; i++)
+        for(int i = 0; i < 8; i++)
         {
             int Rand = Random.Range(0, 16);
                 if (!statesNation[Rand].CheckIfHasRollout(nationalRollouts[q].Name) && nationalRollouts[q].Cprogress <= 0)
@@ -263,7 +320,7 @@ public class Nation : MonoBehaviour
         }
 
         
-        money = 0;
+        
 
         for(int i = 0; i < statesNation.Count; i++)
         {
@@ -273,9 +330,12 @@ public class Nation : MonoBehaviour
         }
 
         yield return new WaitForSeconds(0.5f);
+        DoNotificationStuff();
 
         for(int i = 0; i < statesNation.Count; i++)
         {
+            statesNation[i].localSupportDelta += Random.Range(-0.01f, 0.01f);
+            statesNation[i].localSupportLevel += statesNation[i].localSupportDelta;
             statesNation[i].SubtractBaseSpendingCosts();
             CameraMover.me.TargetPos = statesNation[i].Centroid;
             yield return new WaitForSeconds(Random.Range(0f, 0.1f));
@@ -322,6 +382,31 @@ public class Nation : MonoBehaviour
         
     }
 
+    public List<State> GetAllStatesWithTech(string str)
+    {
+        List<State> states = new List<State>();
+        foreach(State s in statesNation)
+        {
+            if (s.CheckIfFinishedRollout(str))
+            {
+                states.Add(s);
+            }
+        }
+        return states;
+    }
+
+    public bool FinishedNationalTech(string s)
+    {
+        foreach(Rollout r in nationalRollouts)
+        {
+            if(r.Name.Equals(s) && r.Cprogress <= 0)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public Notification FindEventFromID(string ID)
     {
         for(int i = 0; i < mail.Count; i++)
@@ -332,6 +417,31 @@ public class Nation : MonoBehaviour
             }
         }
         return null;
+    }
+
+    public void DoNotificationStuff()
+    {
+        //bullshi
+        foreach(State s in statesNation)
+        {
+            if(s.CheckIfFinishedRollout("Community Outreach"))
+            {
+                if((s.totalInfra + s.size) > 2.5f){
+                if(Random.Range(0f, 1f) < 0.025f)
+                {
+                    AddToQueue("hotel").SetLocation(s).SetTitle(s.Name).SetDescription(s.Name + " is requesting funding to build a hotel");
+                }
+                if(Random.Range(0f, 1f) < 0.025f)
+                {
+                    AddToQueue("school").SetLocation(s).SetTitle(s.Name).SetDescription(s.Name + " is requesting funding to build an elementary school");
+                }
+                if(Random.Range(0f, 1f) < 0.025f)
+                {
+                    AddToQueue("hospital").SetLocation(s).SetTitle(s.Name).SetDescription(s.Name + " is requesting funding to build a hospital");
+                }
+                }
+            }
+        }
     }
 
     // Update is called once per frame

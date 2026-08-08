@@ -121,6 +121,7 @@ public class GraphicsRenderer : MonoBehaviour
         Nation.me.debtSpending = Mathf.Round(Nation.me.GetTotalStateIncome() * 0.20f);
         Nation.me.debt = Mathf.Round(Nation.me.GetTotalStateIncome() * 25f);
         Nation.me.nationalSpendingBase = Nation.me.debtSpending * 0.25f;
+        Nation.me.money = Nation.me.GetTotalStateIncome() - Nation.me.debtSpending - Nation.me.nationalSpendingBase - Nation.me.GetTotalStateSpending();
         Nation.me.nextTurn();
     }
 

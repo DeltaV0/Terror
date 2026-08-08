@@ -124,8 +124,8 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 928414844018649024}
         m_TargetAssemblyTypeName: Notification, Assembly-CSharp
-        m_MethodName: Close
-        m_Mode: 1
+        m_MethodName: Response
+        m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -141,7 +141,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 429139354657306068}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
   m_Name: 
@@ -188,7 +188,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2651569330217870264}
-  - component: {fileID: 2163245804243231688}
+  - component: {fileID: 2981754900584690728}
   m_Layer: 5
   m_Name: ButtonHolder
   m_TagString: Untagged
@@ -216,7 +216,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: -197.5}
   m_SizeDelta: {x: 750, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &2163245804243231688
+--- !u!114 &2981754900584690728
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -307,12 +307,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '"hihi hello i am ur advisor guy!! i''ll be here to give you advice or
-    updates or give you any intel we get or whatever. You can tell it''s me because
-    of the green tint and the quotes."
-
-
-    Who the fuck hired this guy????'
+  m_text: wow fancy Text!!
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 87759f082ded26447a6e463077ac59d4, type: 2}
   m_sharedMaterial: {fileID: 6182044965628757885, guid: 87759f082ded26447a6e463077ac59d4, type: 2}
@@ -449,7 +444,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: I did!
+  m_text: okay
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 87759f082ded26447a6e463077ac59d4, type: 2}
   m_sharedMaterial: {fileID: 6182044965628757885, guid: 87759f082ded26447a6e463077ac59d4, type: 2}
@@ -586,7 +581,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Advisor
+  m_text: wow fancy headline!!
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 87759f082ded26447a6e463077ac59d4, type: 2}
   m_sharedMaterial: {fileID: 6182044965628757885, guid: 87759f082ded26447a6e463077ac59d4, type: 2}
@@ -821,7 +816,7 @@ GameObject:
   - component: {fileID: 7630773729560453714}
   - component: {fileID: 928414844018649024}
   m_Layer: 5
-  m_Name: NotifIntroAdv
+  m_Name: NotifBase
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -906,7 +901,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93e2d3afdb4208d4e8a6cce76a1eb553, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  Identifier: intro advisor
+  Identifier: default
   closeButton: {fileID: 1319213603621790345}
   canClose: 1
 --- !u!1 &5148850365640452993
@@ -1307,7 +1302,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.13612497, g: 0.1792453, b: 0.14519681, a: 1}
+  m_Color: {r: 0.13333334, g: 0.13333334, b: 0.13333334, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1

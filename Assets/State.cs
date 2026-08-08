@@ -63,6 +63,10 @@ public class State : MonoBehaviour
     public float totalInfra;
     public float ExtraSpending;
 
+    public float localSupportLevel;
+
+    public float localSupportDelta;
+
     //public float income;
 
   //  public List<Road> roads;
@@ -74,9 +78,9 @@ public class State : MonoBehaviour
         
     }
 
-    public float CalculateSpending()
+    public float CalculateSpending(float simulatedMoney)
     {
-        float simMoney = Nation.me.money;
+        float simMoney = simulatedMoney;
         simMoney -= BaseSpending;
         float f = 0;
         int p = 1;
@@ -99,8 +103,14 @@ public class State : MonoBehaviour
 
     public void SubtractBaseSpendingCosts()
     {
-        Nation.me.money -= BaseSpending;
-        TextParticle.NewParticle(1f, "<color=red>-$"  + BaseSpending + "b</color>", Centroid + (Vector3)Random.insideUnitCircle * 0.5f);
+        if (Nation.me.TrySpendMoney(BaseSpending))
+        {
+            TextParticle.NewParticle(1f, "<color=red>-$"  + BaseSpending + "b</color>", Centroid + (Vector3)Random.insideUnitCircle * 0.5f);
+        } else
+        {
+            TextParticle.NewParticle(1f, "!!!", Centroid + (Vector3)Random.insideUnitCircle * 0.5f);
+            totalInfra *= 0.9f;
+        }
     }
 
     public void GiveIncome()
@@ -118,7 +128,7 @@ public class State : MonoBehaviour
             if(thingsHere[i].progress > 0 && CheckIfHasAllPrerequisites(thingsHere[i]) && (Nation.me.money - thingsHere[i].cost) >= 0)
             {
                 thingsHere[i].progress--;
-                Nation.me.money -= thingsHere[i].cost;
+                Nation.me.TrySpendMoney(thingsHere[i].cost);
                 TextParticle.NewParticle(1f, "<color=red>-$"  + thingsHere[i].cost + "b</color>", Centroid + (Vector3)Random.insideUnitCircle * 0.5f);
                 if(thingsHere[i].progress <= 0)
                 {
@@ -156,12 +166,14 @@ public class State : MonoBehaviour
 
     public bool CheckIfHasAllPrerequisites(Rollout r)
     {
+        if(r.preRequisites != null){
         for(int i = 0; i < r.preRequisites.Count; i++)
         {
             if (!CheckIfFinishedRollout(r.preRequisites[i]))
             {
                 return false;
             }
+        }
         }
         return true;
     }
@@ -423,6 +435,8 @@ public class State : MonoBehaviour
             parts[3].Play();
             size = 4;
         }
+        totalInfra = Random.Range(0f, 0.25f);
+        localSupportLevel = (4f + (float)size) / 10f;
 
         
         
@@ -468,6 +482,7 @@ public class State : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        localSupportLevel = Mathf.Clamp(localSupportLevel, 0f, 1f);
         transform.localScale = Vector3.Lerp(transform.localScale, new Vector3(normalSize * 1f, normalSize * 1f, 1), 0.1f);
 
         BaseSpending = 3 + size + totalInfra;

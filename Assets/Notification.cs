@@ -10,12 +10,35 @@ public class Notification : MonoBehaviour
     public Button closeButton;
     public bool canClose;
 
+    public State Location;//if location is important
+
+    public TMP_Text[] text;//usually not important
+
     void Awake()
     {
        closeButton.interactable =  canClose;
+       Nation.me.seenEvents.Add(Identifier);
        Nation.me.openThings++;
     }
     //public TMP_Text[] texts;
+
+    public Notification SetLocation(State s)
+    {
+        Location = s;
+        return this;
+    }
+
+    public Notification SetDescription(string s)
+    {
+        text[1].text = s;
+        return this;
+    }
+
+    public Notification SetTitle(string s)
+    {
+        text[0].text = s;
+        return this;
+    }
 
 
 
@@ -44,7 +67,7 @@ public class Notification : MonoBehaviour
     {
         Nation.me.openThings--;
         UnHover();
-        Nation.me.mailQueue.Add(Identifier);
+        Nation.me.mailQueue.Add(this);
         Destroy(gameObject);   
     }
 
@@ -59,5 +82,55 @@ public class Notification : MonoBehaviour
     {
         CameraMover.me.hoverEnabled = false;
         CameraMover.me.hoverText = "";
+    }
+
+    public void Response(string data)
+    {
+        switch (data)
+        {
+            case "":
+                Debug.Log("what is this, question? no data.");
+                Close();
+                break;
+            case "hotelStateBuildYes":
+                Location.thingsHere.Add( Rollout.NewRollout("hotel", null, 4, 0.25f, 0, 0, 0, false));
+                Location.thingsHere[Location.thingsHere.Count - 1].location = Location;
+                Location.localSupportLevel += 0.02f;
+                Close();
+                break;
+            case "hotelStateBuildNo":
+                Location.localSupportLevel -= 0.01f;
+              //  Debug.Log("what is this, question? no data.");
+                Close();
+                break;
+            case "hospitalStateBuildYes":
+                Location.thingsHere.Add( Rollout.NewRollout("hospital", null, 5, 1, 0, 0, 0, false));
+                Location.thingsHere[Location.thingsHere.Count - 1].location = Location;
+                Location.localSupportLevel += 0.01f;
+                Close();
+                break;
+            case "hospitalStateBuildNo":
+                Location.localSupportLevel -= 0.05f;
+              //  Debug.Log("what is this, question? no data.");
+                Close();
+                break;
+            case "schoolStateBuildYes":
+                Location.thingsHere.Add( Rollout.NewRollout("school", null, 5, 0.75f, 0, 0, 0, false));
+                Location.thingsHere[Location.thingsHere.Count - 1].location = Location;
+                Location.localSupportLevel += 0.01f;
+                Close();
+                break;
+            case "schoolStateBuildNo":
+                Location.localSupportLevel -= 0.04f;
+              //  Debug.Log("what is this, question? no data.");
+                Close();
+                break;
+            default:
+                Debug.Log(data + " | notification response doesnt exist?");
+                //dont close it! might be useful for debugging...
+                break;
+            
+
+        }
     }
 }
