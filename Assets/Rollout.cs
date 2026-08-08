@@ -65,6 +65,12 @@ public class Rollout : ScriptableObject
 
                 location.localSupportDelta += (location.size * 0.01f);
             }
+            if(Name.Equals("Electrical II"))
+            {
+                location.totalInfra += (location.size * 0.04f);
+
+                location.localSupportDelta += (location.size * 0.01f);
+            }
             if(Name.Equals("Water I"))
             {
                 location.totalInfra += 0.2f;
@@ -116,6 +122,28 @@ public class Rollout : ScriptableObject
             if(Name.Equals("Health I"))
             {
                 location.totalInfra += 0.0f;
+                location.localSupportDelta += 0.04f;
+            }
+            if(Name.Equals("Health II"))
+            {
+                List<State> states2 = Nation.me.GetAllStatesWithTech("Health II");
+                foreach(State s in states2)
+                {
+                   // s.totalInfra += 0.02f;
+                    s.localSupportDelta += 0.01f;
+                }
+                //location.totalInfra += 0.0f;
+                location.localSupportDelta += 0.04f;
+            }
+            if(Name.Equals("Vaccines I"))
+            {
+                List<State> states2 = Nation.me.GetAllStatesWithTech("Vaccines I");
+                foreach(State s in states2)
+                {
+                   // s.totalInfra += 0.02f;
+                    s.localSupportDelta += 0.01f;
+                }
+                //location.totalInfra += 0.0f;
                 location.localSupportDelta += 0.04f;
             }
 
