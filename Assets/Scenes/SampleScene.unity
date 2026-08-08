@@ -3157,13 +3157,13 @@ RectTransform:
   m_Children:
   - {fileID: 1204347284}
   - {fileID: 976249201}
-  - {fileID: 2063271258}
   - {fileID: 1977012959}
   - {fileID: 884543764}
   - {fileID: 295993453}
   - {fileID: 1000678528}
   - {fileID: 98767733}
   - {fileID: 1058324267}
+  - {fileID: 2063271258}
   m_Father: {fileID: 36183869}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -10768,6 +10768,7 @@ MonoBehaviour:
   - {fileID: 928414844018649024, guid: ab8fa7313c1e326439f911c7e04e1303, type: 3}
   - {fileID: 928414844018649024, guid: ac695090a3cbde54fa86339746e8846a, type: 3}
   mailQueue: []
+  seenEvents: []
   NeighborNations: []
   states: []
   statesNation: []
@@ -11346,7 +11347,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 64, y: 192}
+  m_AnchoredPosition: {x: 63.99893, y: 191.99815}
   m_SizeDelta: {x: 64, y: 64}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2063271259
