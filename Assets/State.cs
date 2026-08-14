@@ -67,6 +67,8 @@ public class State : MonoBehaviour
 
     public float localSupportDelta;
 
+    public Senator senator;
+
     //public float income;
 
   //  public List<Road> roads;
@@ -445,6 +447,10 @@ public class State : MonoBehaviour
 
         Name = "Sector " + NameGenerator.me.SectorNameGen[Random.Range(0, NameGenerator.me.SectorNameGen.Length)] + "-" + NameGenerator.me.SectorNameGen[Random.Range(0, NameGenerator.me.SectorNameGen.Length)] + "-" + NameGenerator.me.SectorNameGen[Random.Range(0, NameGenerator.me.SectorNameGen.Length)];
         //selected = true;
+        if(!outside){
+        senator = Senator.NewSenator(this, 0.25f*(size - 1f));
+        Congress.me.Senate.Add(senator);
+        }
         BaseSpending = 3 + size + totalInfra;
         income = 1 + ((size + totalInfra) * 4);
         
