@@ -50,6 +50,7 @@ public class CameraMover : MonoBehaviour
     {
         Vector3 worldPosition = cam.ScreenToWorldPoint(Input.mousePosition);
         Pointer.position = new Vector3(worldPosition.x, worldPosition.y, -2f);// - new Vector3(16, 16, 0);
+        Debug.Log(Input.mousePosition);
 
     }
 
@@ -58,8 +59,28 @@ public class CameraMover : MonoBehaviour
     {
         mousehoverText.text = hoverText;
        Vector3 worldPosition = cam.ScreenToWorldPoint(Input.mousePosition);
+       Vector3 DifferencePosition = worldPosition - transform.position;
        MouseHoverer.gameObject.SetActive(hoverEnabled);
-       MouseHoverer.position = Vector3.Lerp(MouseHoverer.position, new Vector3(worldPosition.x + 0.1f, worldPosition.y + 0.1f, -1f), 0.1f);// - new Vector3(MouseHovererRect.sizeDelta.x - 32, MouseHovererRect.sizeDelta.y * 2 - 16, 0), 0.1f);
+       if(Input.mousePosition.y >= 720/2){
+       if(Input.mousePosition.x >= 1280 / 2)
+        {
+            MouseHoverer.localPosition = Vector3.Lerp(MouseHoverer.localPosition, new Vector3(Input.mousePosition.x - 1280/2 - 16 - MouseHovererRect.sizeDelta.x, Input.mousePosition.y - 720/2 - 16 - MouseHovererRect.sizeDelta.y, -1f), 0.1f);
+        } else
+        {
+            MouseHoverer.localPosition = Vector3.Lerp(MouseHoverer.localPosition, new Vector3(Input.mousePosition.x - 1280/2 + 16, Input.mousePosition.y - 720/2 - 16 - MouseHovererRect.sizeDelta.y, -1f), 0.1f);
+
+        }
+       } else
+        {
+           if(Input.mousePosition.x >= 1280 / 2)
+        {
+            MouseHoverer.localPosition = Vector3.Lerp(MouseHoverer.localPosition, new Vector3(Input.mousePosition.x - 1280/2 - 16 - MouseHovererRect.sizeDelta.x, Input.mousePosition.y - 720/2 + 16, -1f), 0.1f);
+        } else
+        {
+            MouseHoverer.localPosition = Vector3.Lerp(MouseHoverer.localPosition, new Vector3(Input.mousePosition.x - 1280/2 + 16, Input.mousePosition.y - 720/2 + 16, -1f), 0.1f);
+
+        } 
+        }
        MouseHovererRect.sizeDelta = mousehoverText.rectTransform.sizeDelta + new Vector2(20, 20); 
        MouseHovererRect.GetChild(0).GetComponent<RectTransform>().sizeDelta = mousehoverText.rectTransform.sizeDelta + new Vector2(10, 10);
        if(!Nation.me.doingTurnStuff){
