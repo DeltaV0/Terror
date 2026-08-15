@@ -65,6 +65,13 @@ public class Nation : MonoBehaviour
 
     public int turn;
 
+    public bool politiview;
+
+    public List<Policy> policiesToVoteOn = new List<Policy>();
+
+
+
+
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -266,6 +273,11 @@ public class Nation : MonoBehaviour
         StartCoroutine(TurnEnum());
     }
 
+    public void StartTurn()
+    {
+        StartCoroutine(TurnEnum2());
+    }
+
     public bool TrySpendMoney(float amt)
     {
         if(money - amt < 0)
@@ -278,24 +290,9 @@ public class Nation : MonoBehaviour
             return true;
         }
     }
-
-    public IEnumerator TurnEnum()
+    public IEnumerator TurnEnum2()
     {
-        nationalSpendingExtra = GetNationalSpending();
         doingTurnStuff = true;
-        Corruption += CorruptionDelta;
-        Corruption = Mathf.Max(0, Corruption);
-       // CameraMover.me.targeting = true;
-        CameraMover.me.screenPos = new Vector2(0, 0);
-        selectedState = null;
-
-        DataManager.me.UpdateCharts();
-        
-
-        
-        debt -= debtSpending + money;
-        money = 0;
-        yield return new WaitForSeconds(0.5f);
         turn += 1;
 
         for(int q = 0; q < nationalRollouts.Count; q++){
@@ -379,6 +376,30 @@ public class Nation : MonoBehaviour
             yield return new WaitForSeconds(0.1f);
 
         }
+    }
+
+    public IEnumerator TurnEnum()
+    {
+        nationalSpendingExtra = GetNationalSpending();
+        doingTurnStuff = true;
+        Corruption += CorruptionDelta;
+        Corruption = Mathf.Max(0, Corruption);
+       // CameraMover.me.targeting = true;
+        CameraMover.me.screenPos = new Vector2(0, 0);
+        selectedState = null;
+
+        DataManager.me.UpdateCharts();
+        
+
+        
+        debt -= debtSpending + money;
+        money = 0;
+
+        yield return new WaitForSeconds(0.25f);
+
+        Congress.me.Meet();
+        
+        
         
     }
 
@@ -447,6 +468,10 @@ public class Nation : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        if (Congress.me.meeting)
+        {
+            politiview = true;
+        }
         moneyShown = Mathf.Round(Mathf.Lerp(moneyShown, money, 0.1f) * 1000f) / 1000f;
         nationalSpendingBase = Mathf.Round(nationalSpendingBase * 1000f) / 1000f;
          nationalSpendingExtra = Mathf.Round(nationalSpendingExtra * 1000f) / 1000f;

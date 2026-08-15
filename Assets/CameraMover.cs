@@ -25,6 +25,8 @@ public class CameraMover : MonoBehaviour
     public bool targeting;
     public Vector3 TargetPos;
 
+    //public GameObject hoveredObject;
+
     public void HoverOverSomething(string s)
     {
         hoverEnabled = true;
@@ -50,7 +52,7 @@ public class CameraMover : MonoBehaviour
     {
         Vector3 worldPosition = cam.ScreenToWorldPoint(Input.mousePosition);
         Pointer.position = new Vector3(worldPosition.x, worldPosition.y, -2f);// - new Vector3(16, 16, 0);
-        Debug.Log(Input.mousePosition);
+        //Debug.Log(Input.mousePosition);
 
     }
 
@@ -90,18 +92,18 @@ public class CameraMover : MonoBehaviour
             {
                 if(screenPos.y == 0){
                 screenPos = new Vector2(0, -2);
-                } else if(screenPos.y == 2){
+                } /*else if(screenPos.y == 2){
                 screenPos = new Vector2(0, 0);
-                }
+                }*/
             }
             moving = true;
         } else if(worldPosition.y > 5.5f + transform.position.y && worldPosition.x > -6 && worldPosition.x < 6)
         {
             if(!moving)
             {
-                if(screenPos.y == 0){
+                /*if(screenPos.y == 0){
                 screenPos = new Vector2(0, 2);
-                } else if(screenPos.y == -2){
+                } else */if(screenPos.y == -2){
                 screenPos = new Vector2(0, 0);
                 }
             }
@@ -113,17 +115,30 @@ public class CameraMover : MonoBehaviour
         {
            moving = false; 
         }
-        if(!targeting){
+        //if(!targeting){
        if(Nation.me.selectedState == null || Nation.me.doingTurnStuff)
         {
+            if (Nation.me.doingTurnStuff)
+            {
+                UI[4].localPosition = Vector3.Lerp(UI[4].localPosition, new Vector3(-960, 576, 0), 0.1f);
+            } else
+            {
+                UI[4].localPosition = Vector3.Lerp(UI[4].localPosition, new Vector3(-560, 288, 0), 0.1f);
+            }
+            if (Congress.me.meeting)
+            {
+                transform.position = Vector3.Lerp(transform.position, Vector3.Lerp(Vector2.zero + new Vector2(screenPos.x + 3f, screenPos.y * 6f), new Vector3(worldPosition.x, worldPosition.y, -10), 0.025f), 0.1f);
+                cam.orthographicSize = Mathf.Lerp(cam.orthographicSize, 7f, 0.1f);
 
-            transform.position = Vector3.Lerp(transform.position, Vector3.Lerp(Vector2.zero + new Vector2(screenPos.x, screenPos.y * 6f), new Vector3(worldPosition.x, worldPosition.y, -10), 0.1f), 0.1f);
-            cam.orthographicSize = Mathf.Lerp(cam.orthographicSize, 5f + (Vector3.Distance(worldPosition, Vector3.zero) * 0.1f), 0.1f);
+            } else
+            {
+                transform.position = Vector3.Lerp(transform.position, Vector3.Lerp(Vector2.zero + new Vector2(screenPos.x, screenPos.y * 6f), new Vector3(worldPosition.x, worldPosition.y, -10), 0.1f), 0.1f);
+                cam.orthographicSize = Mathf.Lerp(cam.orthographicSize, 5f + (Vector3.Distance(worldPosition, Vector3.zero) * 0.1f), 0.1f);
+            }
             UI[0].localPosition = Vector3.Lerp(UI[0].localPosition, new Vector3(-820f, 0, 0), 0.1f);
             UI[1].localPosition = Vector3.Lerp(UI[1].localPosition, new Vector3(820f, 0, 0), 0.1f);
             UI[2].localPosition = Vector3.Lerp(UI[2].localPosition, new Vector3(0, 432, 0), 0.1f);
             UI[3].localPosition = Vector3.Lerp(UI[3].localPosition, new Vector3(0, -432, 0), 0.1f);
-            UI[4].localPosition = Vector3.Lerp(UI[4].localPosition, new Vector3(-560, 288, 0), 0.1f);
             UI[5].localPosition = Vector3.Lerp(UI[5].localPosition, new Vector3(-560, -350, 0), 0.1f);
 
                    
@@ -140,17 +155,11 @@ public class CameraMover : MonoBehaviour
             UI[5].localPosition = Vector3.Lerp(UI[5].localPosition, new Vector3(-960, -576, 0), 0.1f);
 
         }
-        } else
-        {
-            transform.position = Vector3.Lerp(transform.position, Vector3.zero, 0.01f);
-            cam.orthographicSize = Mathf.Lerp(cam.orthographicSize, 4f, 0.05f);
-            UI[0].localPosition = Vector3.Lerp(UI[0].localPosition, new Vector3(-820f, 0, 0), 0.1f);
-            UI[1].localPosition = Vector3.Lerp(UI[1].localPosition, new Vector3(820f, 0, 0), 0.1f);
-            UI[2].localPosition = Vector3.Lerp(UI[2].localPosition, new Vector3(0, 432, 0), 0.1f);
-            UI[3].localPosition = Vector3.Lerp(UI[3].localPosition, new Vector3(0, -432, 0), 0.1f);
-            UI[4].localPosition = Vector3.Lerp(UI[4].localPosition, new Vector3(-560, 288, 0), 0.1f);
-
-        }
         transform.position = new Vector3(transform.position.x, transform.position.y, -10);
+    }
+
+    public void TogglePolitiview()
+    {
+        Nation.me.politiview = !Nation.me.politiview;
     }
 }
