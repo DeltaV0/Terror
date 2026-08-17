@@ -21,4 +21,9 @@ public class Policy : ScriptableObject
         r.Init(s, pop, b);
         return r;
     }
+
+    public void Pass()
+    {
+        
+    }
 }

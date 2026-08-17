@@ -20,6 +20,12 @@ public class Notification : MonoBehaviour
        Nation.me.seenEvents.Add(Identifier);
        Nation.me.openThings++;
     }
+
+    public object Shallowcopy()
+    {
+        return this.MemberwiseClone();
+    }
+
     //public TMP_Text[] texts;
 
     public Notification SetLocation(State s)

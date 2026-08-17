@@ -131,6 +131,11 @@ public class Nation : MonoBehaviour
         
     }
 
+    public void Phone()
+    {
+        OpenImmediately("PhoneMenu");
+    }
+
     public float GetNationalSpending()
     {
         float f = 0;
@@ -266,6 +271,16 @@ public class Nation : MonoBehaviour
         g.transform.localScale = new Vector3(1, 1, 1);
         g.transform.position = new Vector3(Random.Range(-3f, 3f), Random.Range(-3f, 3f), 0);
         }
+    }
+
+    public void OpenImmediately(string s)
+    {
+       // if(mailQueue.Count > 0){
+        GameObject g = Instantiate(FindEventFromID(s).gameObject, new Vector3(Random.Range(-3f, 3f), Random.Range(-3f, 3f), 0), Quaternion.identity);
+        g.transform.SetParent(MainCameraCanvas, true);
+        g.transform.localScale = new Vector3(1, 1, 1);
+        g.transform.position = new Vector3(Random.Range(-3f, 3f), Random.Range(-3f, 3f), 0);
+        //}
     }
 
     public void nextTurn()
@@ -434,7 +449,7 @@ public class Nation : MonoBehaviour
         {
             if (ID.Equals(mail[i].Identifier))
             {
-                return mail[i];
+                return (Notification)mail[i].Shallowcopy();
             }
         }
         return null;

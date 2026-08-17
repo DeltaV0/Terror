@@ -8839,7 +8839,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1421742760}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1920152379}
+        m_TargetAssemblyTypeName: Nation, Assembly-CSharp
+        m_MethodName: Phone
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1421742760
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12056,6 +12068,7 @@ MonoBehaviour:
   - {fileID: 928414844018649024, guid: 8b957a9fc5b1f6748a43c94c38bbf054, type: 3}
   - {fileID: 928414844018649024, guid: ab8fa7313c1e326439f911c7e04e1303, type: 3}
   - {fileID: 928414844018649024, guid: ac695090a3cbde54fa86339746e8846a, type: 3}
+  - {fileID: 928414844018649024, guid: dcbd207bdd15b2443bddc03ecb1336c9, type: 3}
   mailQueue: []
   seenEvents: []
   NeighborNations: []
