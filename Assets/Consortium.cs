@@ -10,6 +10,9 @@ public class Consortium : MonoBehaviour
     public List<Advisor> Consortium = new List<Advisor>();
 
     public bool meeting;
+
+    public List<Transform> positions = new List<Transform>();
+    public List<SpriteRenderer> Sprites = new List<SpriteRenderer>();
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
