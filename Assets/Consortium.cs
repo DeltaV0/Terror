@@ -7,7 +7,7 @@ using TMPro;
 public class Consortium : MonoBehaviour
 {
     public static Consortium me;
-    public List<Advisor> Consortium = new List<Advisor>();
+    public List<Advisor> council = new List<Advisor>();
 
     public bool meeting;
 
@@ -16,7 +16,7 @@ public class Consortium : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        me = this;
     }
 
     public void ToggleActive()
