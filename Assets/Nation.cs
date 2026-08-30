@@ -133,7 +133,8 @@ public class Nation : MonoBehaviour
 
     public void Phone()
     {
-        OpenImmediately("PhoneMenu");
+        OpenImmediately("PhoneMenu"); //ughh just use this for now it's easier
+        //Consortium.me.ToggleActive();
     }
 
     public float GetNationalSpending()
@@ -273,13 +274,14 @@ public class Nation : MonoBehaviour
         }
     }
 
-    public void OpenImmediately(string s)
+    public Notification OpenImmediately(string s)
     {
        // if(mailQueue.Count > 0){
         GameObject g = Instantiate(FindEventFromID(s).gameObject, new Vector3(Random.Range(-3f, 3f), Random.Range(-3f, 3f), 0), Quaternion.identity);
         g.transform.SetParent(MainCameraCanvas, true);
         g.transform.localScale = new Vector3(1, 1, 1);
         g.transform.position = new Vector3(Random.Range(-3f, 3f), Random.Range(-3f, 3f), 0);
+        return g.GetComponent<Notification>();
         //}
     }
 
@@ -338,10 +340,10 @@ public class Nation : MonoBehaviour
         {
             statesNation[i].GiveIncome();
             CameraMover.me.TargetPos = statesNation[i].Centroid;
-            yield return new WaitForSeconds(Random.Range(0f, 0.25f));
+            //yield return new WaitForSeconds(Random.Range(0f, 0.25f));
         }
 
-        yield return new WaitForSeconds(0.5f);
+       /// yield return new WaitForSeconds(0.5f);
         DoNotificationStuff();
 
         for(int i = 0; i < statesNation.Count; i++)
@@ -350,18 +352,18 @@ public class Nation : MonoBehaviour
             statesNation[i].localSupportLevel += statesNation[i].localSupportDelta;
             statesNation[i].SubtractBaseSpendingCosts();
             CameraMover.me.TargetPos = statesNation[i].Centroid;
-            yield return new WaitForSeconds(Random.Range(0f, 0.1f));
+            //yield return new WaitForSeconds(Random.Range(0f, 0.1f));
         }
         
 
         
         money -= nationalSpendingBase;
 
-        yield return new WaitForSeconds(0.5f);
+        //yield return new WaitForSeconds(0.5f);
 
         money -= debtSpending;
 
-        yield return new WaitForSeconds(0.5f);
+        //yield return new WaitForSeconds(0.5f);
 
         money -= nationalSpendingExtra;
 
@@ -370,7 +372,7 @@ public class Nation : MonoBehaviour
             if(statesNation[i].CanDoSomething()){
             statesNation[i].DoTurn();
             CameraMover.me.TargetPos = statesNation[i].Centroid;
-            yield return new WaitForSeconds(Random.Range(0f, 0.25f));
+            //yield return new WaitForSeconds(Random.Range(0f, 0.25f));
             }
         }
 
@@ -494,50 +496,50 @@ public class Nation : MonoBehaviour
          buttons[1].interactable = mailQueue.Count > 0 && !doingTurnStuff;
          text[0].text = "x" + mailQueue.Count;
          string str = "";
-        switch (turn % 12)
+       /* switch (turn % 12)
         {
             case 0:
-                str += "jan";
+                str += "Jan";
                 break;
             case 1:
-                str += "feb";
+                str += "Feb";
                 break;
             case 2:
-                str += "mar";
+                str += "Mar";
                 break;
             case 3:
-                str += "apr";
+                str += "Apr";
                 break;
             case 4:
-                str += "may";
+                str += "May";
                 break;
             case 5:
-                str += "jun";
+                str += "Jun";
                 break;
             case 6:
-                str += "jul";
+                str += "Jul";
                 break;
             case 7:
-                str += "aug";
+                str += "Aug";
                 break;
             case 8:
-                str += "sep";
+                str += "Sep";
                 break;
             case 9:
-                str += "oct";
+                str += "Oct";
                 break;
             case 10:
-                str += "nov";
+                str += "Nov";
                 break;
             case 11:
-                str += "dec";
+                str += "Dec";
                 break;
             default:
-                str += "?";
+                str += "Err OOT";
                 break;
-            }
+            }*/
 
-            str += " ";
+            str += "01/" + ((turn % 12) + 1).ToString("00") + "/";
             str += ((turn / 12) + 2002) + "";
           text[1].text = str;
            text[2].text = "$" + moneyShown + "b";

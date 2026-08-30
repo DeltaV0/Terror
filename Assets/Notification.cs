@@ -12,11 +12,16 @@ public class Notification : MonoBehaviour
 
     public State Location;//if location is important
 
+    public Policy policy;//if this is for a policy proposal
+
     public TMP_Text[] text;//usually not important
 
     void Awake()
     {
-       closeButton.interactable =  canClose;
+        if(closeButton != null)
+        {
+           closeButton.interactable =  canClose; 
+        }
        Nation.me.seenEvents.Add(Identifier);
        Nation.me.openThings++;
     }
@@ -31,6 +36,12 @@ public class Notification : MonoBehaviour
     public Notification SetLocation(State s)
     {
         Location = s;
+        return this;
+    }
+
+    public Notification SetPolicy(Policy s)
+    {
+        policy = s;
         return this;
     }
 
@@ -130,6 +141,20 @@ public class Notification : MonoBehaviour
                 Location.localSupportLevel -= 0.04f;
               //  Debug.Log("what is this, question? no data.");
                 Close();
+                break;
+            case "OpenSeniorAdvisor":
+                Nation.me.OpenImmediately("SeniorAdvisorMenu");
+                Close();
+                break;
+            case "SeniorAdvisorRecPolicy":
+                Nation.me.OpenImmediately("Proposal").SetPolicy(Policy.NewPolicy("test", 0.25f, -1f));
+                Close();
+                break;
+            case "LGTM":
+                //Nation.me.OpenImmediately("SeniorAdvisorMenu");
+                //pass this policy into senate! not implemented yet
+                Nation.me.policiesToVoteOn.Add(policy);
+                Close(); 
                 break;
             default:
                 Debug.Log(data + " | notification response doesnt exist?");

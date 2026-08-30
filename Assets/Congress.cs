@@ -53,9 +53,46 @@ public class Congress : MonoBehaviour
             yield return new WaitForSeconds(1f/16f);
 
         }
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1f);
+        for(int i = 0; i < Nation.me.policiesToVoteOn.Count; i++)
+            {
+                int votes = 0;
+                voting = true;
+                Instantiate(log.Initialize("Voting on: " + Nation.me.policiesToVoteOn[i].name), logParent.transform).transform.position = Vector3.zero;
+                yield return new WaitForSeconds(1f);
+                    for(int q = 0; q < Senate.Count; q++)
+                {
+                    
+                    float rand = Random.value;
+                    if(rand > Senate[q].CalculateVotingChance(Nation.me.policiesToVoteOn[i]))
+                    {
+                        Senate[q].home.politicsBubble[0].color = new Color(0, 1, 0, 1);
+                        Senate[q].aye = true;
+                        votes++;
+                    } else
+                    {
+                        Senate[q].home.politicsBubble[0].color = new Color(1, 0, 0, 1);
+                    }
+                    
+                    yield return new WaitForSeconds(1f/8f);
+
+                }
+                yield return new WaitForSeconds(0.5f);
+                if(votes > 8)
+                {
+                    Instantiate(log.Initialize((votes) + "/16 | Passed!"), logParent.transform).transform.position = Vector3.zero;
+                    Nation.me.policiesToVoteOn[i].Pass();
+                } else
+                {
+                    Instantiate(log.Initialize((votes) + "/16 | Failed..."), logParent.transform).transform.position = Vector3.zero;
+                }
+                voting = false;
+                yield return new WaitForSeconds(1f);
+            }
+            Nation.me.policiesToVoteOn.Clear();
+        yield return new WaitForSeconds(1f);
         Instantiate(log.Initialize("Meeting adjurned!"), logParent.transform).transform.position = Vector3.zero;
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(1f);
         meeting = false;
         for(int i = 0; i < Senate.Count; i++)
         {

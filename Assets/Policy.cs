@@ -24,6 +24,11 @@ public class Policy : ScriptableObject
 
     public void Pass()
     {
-        
+        switch (name)
+        {
+            default:
+            Debug.Log(name + " | Policy pass data doesnt exist?");
+                break;
+        }
     }
 }

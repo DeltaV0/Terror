@@ -480,7 +480,7 @@ public class State : MonoBehaviour
                 if(s != null && !s.outside && !outside)
                 {
                     neighbors.Add(s);
-                } else if (s.outside || outside)
+                } else if (s != null && (s.outside || outside))
                 {
                     neighborsOutside.Add(s);
                 }
@@ -502,14 +502,16 @@ public class State : MonoBehaviour
             politicsBubble[0].transform.localScale = Vector3.Lerp(politicsBubble[0].transform.localScale, new Vector3(0.75f, 0.75f, 0.75f), 0.1f);
             if (Congress.me.voting)
             {
+                if(senator != null){
                 if (senator.aye)
                 {
-                    politicsBubble[0].color = Color.Lerp(politicsBubble[0].color, new Color(Mathf.Min(senator.leftrightStanding, 0) * -0.5f + (1f - Mathf.Abs(senator.leftrightStanding)), (1f - Mathf.Abs(senator.leftrightStanding)), Mathf.Max(senator.leftrightStanding * 0.5f, 0) + (1f - Mathf.Abs(senator.leftrightStanding)), 1f), 0.1f); 
+                    politicsBubble[0].color = Color.Lerp(politicsBubble[0].color, new Color(Mathf.Min(senator.leftrightStanding, 0) * -0.5f + (1f - Mathf.Abs(senator.leftrightStanding)), (1f - Mathf.Abs(senator.leftrightStanding)), Mathf.Max(senator.leftrightStanding * 0.5f, 0) + (1f - Mathf.Abs(senator.leftrightStanding)), 1f), 0.025f); 
 
                 } else
                 {
-                    politicsBubble[0].color = Color.Lerp(politicsBubble[0].color, new Color(Mathf.Min(senator.leftrightStanding, 0) * -0.1f + (0.25f - Mathf.Abs(senator.leftrightStanding)), (0.25f - Mathf.Abs(senator.leftrightStanding)), Mathf.Max(senator.leftrightStanding * 0.1f, 0) + (0.25f - Mathf.Abs(senator.leftrightStanding)), 1f), 0.1f); 
+                    politicsBubble[0].color = Color.Lerp(politicsBubble[0].color, new Color(Mathf.Min(senator.leftrightStanding, 0) * -0.1f + (0.25f - Mathf.Abs(senator.leftrightStanding)), (0.25f - Mathf.Abs(senator.leftrightStanding)), Mathf.Max(senator.leftrightStanding * 0.1f, 0) + (0.25f - Mathf.Abs(senator.leftrightStanding)), 1f), 0.025f); 
 
+                }
                 }
             }
         } else
@@ -537,8 +539,12 @@ public class State : MonoBehaviour
                     {
                         sprRenders[i].sortingOrder = 65;
                     }
-                    if(!Congress.me.meeting){
+                    if(!Congress.me.voting){
                     politicsBubble[0].color = Color.Lerp(politicsBubble[0].color, new Color(Mathf.Min(senator.leftrightStanding, 0) * -0.5f + (1f - Mathf.Abs(senator.leftrightStanding)), (1f - Mathf.Abs(senator.leftrightStanding)), Mathf.Max(senator.leftrightStanding * 0.5f, 0) + (1f - Mathf.Abs(senator.leftrightStanding)), 1f), 0.1f); 
+                    } else
+                    {
+                    politicsBubble[0].color = Color.Lerp(politicsBubble[0].color, new Color((Mathf.Min(senator.leftrightStanding, 0) * -0.5f + (1f - Mathf.Abs(senator.leftrightStanding)) )* (senator.aye ? 1 : 0.1f), (1f - Mathf.Abs(senator.leftrightStanding)) * (senator.aye ? 1 : 0.1f),( Mathf.Max(senator.leftrightStanding * 0.5f, 0) + (1f - Mathf.Abs(senator.leftrightStanding))) * (senator.aye ? 1 : 0.1f), 1f), 0.1f); 
+
                     }
             }
         } else {

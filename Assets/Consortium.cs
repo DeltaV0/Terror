@@ -17,6 +17,7 @@ public class Consortium : MonoBehaviour
     void Start()
     {
         me = this;
+        Dismiss();
     }
 
     public void ToggleActive()
@@ -33,10 +34,17 @@ public class Consortium : MonoBehaviour
 
     public void Activate()
     {
-        
+        meeting = true;
+        Sprites[0].gameObject.SetActive(true);
     }
 
     public void Dismiss()
+    {
+        meeting = false;
+        Sprites[0].gameObject.SetActive(false);
+    }
+
+    public void Select(int i)
     {
         
     }
