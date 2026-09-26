@@ -34,7 +34,7 @@ public class GraphicsRenderer : MonoBehaviour
 
     public void initGraphics()
     {
-        int xS = 3;
+        int xS = 3; //resolution
         int yS = 3;
 
         

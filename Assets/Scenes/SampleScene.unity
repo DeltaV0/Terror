@@ -229,6 +229,8 @@ MonoBehaviour:
   NationRenderer: {fileID: 1031300578}
   t2: {fileID: 0}
   NeighborNationPf: {fileID: 1458620304112000469, guid: 5f3939729fad5f048bbeb1d8f03acac7, type: 3}
+  xS2: 1
+  yS2: 1
 --- !u!4 &28938228
 Transform:
   m_ObjectHideFlags: 0
@@ -10709,7 +10711,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1477231722
 RectTransform:
   m_ObjectHideFlags: 0
@@ -14171,8 +14173,11 @@ MonoBehaviour:
   Corruption: 0
   CorruptionDelta: 0
   turn: 0
+  miniTurn: 0
+  microTurn: 0
   politiview: 0
   policiesToVoteOn: []
+  speed: 0
 --- !u!4 &1920152380
 Transform:
   m_ObjectHideFlags: 0
