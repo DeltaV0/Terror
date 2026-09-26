@@ -64,10 +64,16 @@ public class Nation : MonoBehaviour
     public float CorruptionDelta;
 
     public int turn;
+    public int miniTurn;
+
+        public int microTurn;
+
 
     public bool politiview;
 
     public List<Policy> policiesToVoteOn = new List<Policy>();
+
+    public int speed;
 
 
 
@@ -76,6 +82,7 @@ public class Nation : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        speed = 1;
         turn-=1;
         CorruptionDelta = 1f;
         me = this;
@@ -393,10 +400,12 @@ public class Nation : MonoBehaviour
             yield return new WaitForSeconds(0.1f);
 
         }
+        speed = 1;
     }
 
     public IEnumerator TurnEnum()
     {
+        speed = 0;
         nationalSpendingExtra = GetNationalSpending();
         doingTurnStuff = true;
         Corruption += CorruptionDelta;
@@ -485,6 +494,18 @@ public class Nation : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        microTurn += speed;
+        if(microTurn % 24 == 0 && speed>0)
+        {
+            microTurn = 0;
+            miniTurn++;
+        }
+        if(miniTurn % 30 == 0 && speed>0 && microTurn % 24 == 0)
+        {
+            microTurn = 0;
+            miniTurn = 0;
+            nextTurn();
+        }
         if (Congress.me.meeting)
         {
             politiview = true;
@@ -539,8 +560,9 @@ public class Nation : MonoBehaviour
                 break;
             }*/
 
-            str += "01/" + ((turn % 12) + 1).ToString("00") + "/";
-            str += ((turn / 12) + 2002) + "";
+            str += miniTurn.ToString("00") + "/" + ((turn % 12) + 1).ToString("00") + "/";
+            str += ((turn / 12) + 2002) + "\n";
+            str += microTurn.ToString("00") + ":00";
           text[1].text = str;
            text[2].text = "$" + moneyShown + "b";
     }
