@@ -222,7 +222,8 @@ public class State : MonoBehaviour
     }
 
     public Texture2D SetClearImage(Texture2D input){
-        for (int y = 0; y < input.height; y++)
+        input.SetPixels32(GraphicsRenderer.BigAssArrayClear);
+       /* for (int y = 0; y < input.height; y++)
         {
             for (int x = 0; x < input.width; x++)
             {
@@ -230,7 +231,8 @@ public class State : MonoBehaviour
                // t.SetPixel(x, y, color);
             }
            // t.Apply(); 
-        }
+        }*/
+        input.Apply(); 
         return input;
     }
 
@@ -254,7 +256,7 @@ public class State : MonoBehaviour
     public void init()
     {
         SetScreenPos();
-        if(outside && (ID == 17 || ID == 19 || ID == 22 ))
+        if(outside && (ID == 17 || ID == 19 || ID == 22 || ID == 25 || ID == 28 || ID == 31))
         {
             GameObject g = Instantiate(GraphicsRenderer.me.NeighborNationPf, Vector3.zero, Quaternion.identity);
             memberOf = g.GetComponent<ForeignNation>();
@@ -263,7 +265,8 @@ public class State : MonoBehaviour
             memberOf.subStates.Add(this);
             
         }
-        tex = new Texture2D(1280, 720); 
+        tex = new Texture2D(1280*GraphicsRenderer.me.xS2, 720*GraphicsRenderer.me.yS2); 
+        //Debug.Log(tex.width);
         tex.filterMode = FilterMode.Point;
         tex = SetClearImage(tex);
         
@@ -277,8 +280,8 @@ public class State : MonoBehaviour
 
     public void MoveToFront(){
         
-        if (!outside)
-        {
+       // if (!outside)
+       // {
             CameraMover.me.HoverOverSomething(Name);
             spriteR.sortingOrder = 64;
             for(int i = 0; i < sprRenders.Length; i++)
@@ -287,7 +290,7 @@ public class State : MonoBehaviour
             }
             Nation.me.hoverState = this;
             hovered = true;
-        }
+       // }
     }
 
     public void MoveToBack(){
@@ -307,8 +310,8 @@ public class State : MonoBehaviour
 
     public void Select()
     {
-        if(!outside && hovered)
-        {
+        //if(hovered)
+        //{
             selected = !selected;
             if(Nation.me.selectedState != null)
             {
@@ -323,7 +326,7 @@ public class State : MonoBehaviour
             {
                 Nation.me.selectedState = null;
             }
-        }
+       // }
     }
 
     public void finishRendering(){
@@ -407,8 +410,8 @@ public class State : MonoBehaviour
         sprRenders[0].color = new Color(1f, 1f, 1f);
         } else
         {
-            sprRenders[0].enabled = true;
-            sprRenders[0].color = spriteR.color;
+        sprRenders[0].enabled = true;
+            sprRenders[0].color = new Color(1f,1f, 1f, 0.1f);;
         }
 
         if(hasData){
@@ -484,6 +487,12 @@ public class State : MonoBehaviour
                 {
                     neighborsOutside.Add(s);
                 }
+                if(s != null && !outside && s.outside && s.memberOf != null){
+                if (!Nation.me.BorderNations.Contains(s.memberOf))
+                {
+                    Nation.me.BorderNations.Add(s.memberOf);
+                }
+                }
             
             }
             //selected = false;
@@ -495,7 +504,7 @@ public class State : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-
+        if(GraphicsRenderer.DoneLoading){
         politicsBubble[0].transform.position = Vector3.Lerp(politicsBubble[0].transform.position, targetPosBubble, 0.1f);
         if (Congress.me.meeting)
         {
@@ -584,6 +593,7 @@ public class State : MonoBehaviour
         }
         }
         
+    }
     }
 
 }

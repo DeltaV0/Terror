@@ -16,6 +16,9 @@ public class Nation : MonoBehaviour
 
     public List<ForeignNation> NeighborNations = new List<ForeignNation>();
 
+    public List<ForeignNation> BorderNations = new List<ForeignNation>();
+
+
     public List<State> states = new List<State>();
 
     public List<State> statesNation = new List<State>();
@@ -68,6 +71,8 @@ public class Nation : MonoBehaviour
 
         public int microTurn;
 
+        public int nanoTurn;
+
 
     public bool politiview;
 
@@ -75,21 +80,29 @@ public class Nation : MonoBehaviour
 
     public int speed;
 
+    public string name;
+
+    readonly int[] DaysInAMonth = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
 
 
-    
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+
+    public IEnumerator StartCrtne()
     {
-        speed = 1;
+        
+        GraphicsRenderer.DoneLoading = false;
+        name = NameGenerator.me.NationNameGenerate();
+        speed = 2;
         turn-=1;
         CorruptionDelta = 1f;
         me = this;
         AddToQueue("intro advisor");
         AddToQueue("intro");
 
+        GraphicsRenderer.BigAssArrayClear = new Color32[(1280*GraphicsRenderer.me.xS2) * (720*GraphicsRenderer.me.yS2)];
+        //foreach() 
 
+        yield return new WaitForSeconds(0);
         for(int i = 0; i < 16; i++)
         {
             GameObject g = Instantiate(statePf, new Vector3(Random.Range(-2.5f, 2.5f), Random.Range(-2.5f, 2.5f), 0), Quaternion.identity);
@@ -97,11 +110,11 @@ public class Nation : MonoBehaviour
             states.Add(g.GetComponent<State>());
             states[i].ID = i;
             states[i].outside = false;
-            states[i].init();
+            //states[i].init();
             g.transform.SetParent(canvas, true);
             //Debug.Log(i);
         }
-
+        yield return new WaitForSeconds(0);
         for(int i = 0; i < 8; i++)
         {
             float q = (float)(i / 4f) * Mathf.PI + Random.Range(-0.25f, 0.25f);
@@ -109,33 +122,66 @@ public class Nation : MonoBehaviour
             states.Add(g.GetComponent<State>());
             states[i+ 16].ID = i + 16;
             states[i+ 16].outside = true;
-            states[i+ 16].init();
+           // states[i+ 16].init();
            g.transform.SetParent(canvas, true);
 
            // Debug.Log(i + "a");
 
         }
-       // states[17].init();
 
-        for(int i = 0; i < 16; i++)
+        yield return new WaitForSeconds(0);
+        for(int i = 0; i < 8; i++)
         {
-            float q = Random.Range(0, 2f * Mathf.PI);
-            GameObject g = Instantiate(statePf, new Vector3(Random.Range(6f, 10f) * Mathf.Cos(q), Random.Range(6f, 10f) * Mathf.Sin(q), 0), Quaternion.identity);
+            float q = (float)(i / 4f) * Mathf.PI + Random.Range(-0.25f, 0.25f);
+            GameObject g = Instantiate(statePf, new Vector3(Random.Range(8f, 11f) * Mathf.Cos(q) + Random.Range(-3f, 3f), Random.Range(6f, 8f) * Mathf.Sin(q) + Random.Range(-2f, 2f), 0), Quaternion.identity);
             states.Add(g.GetComponent<State>());
             states[i+ 24].ID = i + 24;
             states[i+ 24].outside = true;
-            states[i+ 24].init();
+            //states[i+ 24].init();
+           g.transform.SetParent(canvas, true);
+
+           // Debug.Log(i + "a");
+
+        }
+
+        
+       // states[17].init();
+       yield return new WaitForSeconds(0);
+        for(int i = 0; i < 24; i++)
+        {
+            float q = Random.Range(0, 2f * Mathf.PI);
+            GameObject g = Instantiate(statePf, new Vector3(Random.Range(6f, 14f) * Mathf.Cos(q), Random.Range(6f, 14f) * Mathf.Sin(q), 0), Quaternion.identity);
+            states.Add(g.GetComponent<State>());
+            states[i+ 32].ID = i + 32;
+            states[i+ 32].outside = true;
+            
             g.transform.SetParent(canvas, true);
 
            // Debug.Log(i + "b");
         }
+
+        yield return new WaitForSeconds(0);
+
+        for(int i = 0; i < 56; i++)
+        {
+           states[i].init(); 
+        }
+
+        
         /*for(int i = 0; i < states.Count; i++)
         {
             states[i].InitVectorDrawers();
             states[i].RenderLines();
         }*/
+        yield return new WaitForSeconds(0);
         GraphicsRenderer.me.initGraphics();
+        //yield return new WaitForSeconds(0);
+    }
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Start()
+    {
         
+        StartCoroutine(StartCrtne());
     }
 
     public void Phone()
@@ -390,7 +436,7 @@ public class Nation : MonoBehaviour
         //CameraMover.me.targeting = false;
         doingTurnStuff = false;
         selectedState = null;
-        PolicyManager.me.UpdateAllTechs();
+        //PolicyManager.me.UpdateAllTechs();
         CameraMover.me.screenPos = new Vector2(0, 0);
         
 
@@ -400,7 +446,7 @@ public class Nation : MonoBehaviour
             yield return new WaitForSeconds(0.1f);
 
         }
-        speed = 1;
+        speed = 2;
     }
 
     public IEnumerator TurnEnum()
@@ -414,7 +460,7 @@ public class Nation : MonoBehaviour
         CameraMover.me.screenPos = new Vector2(0, 0);
         selectedState = null;
 
-        DataManager.me.UpdateCharts();
+        //DataManager.me.UpdateCharts();
         
 
         
@@ -494,18 +540,25 @@ public class Nation : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        microTurn += speed;
-        if(microTurn % 24 == 0 && speed>0)
+        if(GraphicsRenderer.DoneLoading){
+        nanoTurn += speed * 15;
+        if(nanoTurn >= 60 && speed > 0)
         {
-            microTurn = 0;
-            miniTurn++;
+            nanoTurn = 0;
+            microTurn++;
         }
-        if(miniTurn % 30 == 0 && speed>0 && microTurn % 24 == 0)
+        if(miniTurn >= DaysInAMonth[turn % 12] && speed > 0 && microTurn >= 24)
         {
             microTurn = 0;
             miniTurn = 0;
             nextTurn();
         }
+        if(microTurn >= 24 && speed>0)
+        {
+            microTurn = 0;
+            miniTurn++;
+        }
+        
         if (Congress.me.meeting)
         {
             politiview = true;
@@ -562,8 +615,9 @@ public class Nation : MonoBehaviour
 
             str += miniTurn.ToString("00") + "/" + ((turn % 12) + 1).ToString("00") + "/";
             str += ((turn / 12) + 2002) + "\n";
-            str += microTurn.ToString("00") + ":00";
+            str += microTurn.ToString("00") + ":" + nanoTurn.ToString("00");
           text[1].text = str;
            text[2].text = "$" + moneyShown + "b";
+        }
     }
 }

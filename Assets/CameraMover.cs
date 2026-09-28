@@ -59,6 +59,7 @@ public class CameraMover : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        if(GraphicsRenderer.DoneLoading){
         mousehoverText.text = hoverText;
        Vector3 worldPosition = cam.ScreenToWorldPoint(Input.mousePosition);
        Vector3 DifferencePosition = worldPosition - transform.position;
@@ -90,9 +91,9 @@ public class CameraMover : MonoBehaviour
         {
             if(!moving)
             {
-                if(screenPos.y == 0){
+                /*if(screenPos.y == 0){
                 screenPos = new Vector2(0, -2);
-                } /*else if(screenPos.y == 2){
+                }else if(screenPos.y == 2){
                 screenPos = new Vector2(0, 0);
                 }*/
             }
@@ -103,9 +104,9 @@ public class CameraMover : MonoBehaviour
             {
                 /*if(screenPos.y == 0){
                 screenPos = new Vector2(0, 2);
-                } else */if(screenPos.y == -2){
+                } else if(screenPos.y == -2){
                 screenPos = new Vector2(0, 0);
-                }
+                }*/
             }
             moving = true;
         } else {
@@ -145,6 +146,7 @@ public class CameraMover : MonoBehaviour
         } else
         {
                   text[0].text = Nation.me.selectedState.Name;
+                  text[1].text = "of " + ((Nation.me.selectedState.memberOf != null) ? Nation.me.selectedState.memberOf.name : Nation.me.name);
                 transform.position = Vector3.Lerp(transform.position, Vector3.Lerp(Nation.me.selectedState.Centroid, new Vector3(worldPosition.x, worldPosition.y, -10), 0.02f), 0.1f); 
                    cam.orthographicSize = Mathf.Lerp(cam.orthographicSize, Nation.me.selectedState.col.bounds.extents.magnitude * 1.5f, 0.1f);
                  UI[0].localPosition = Vector3.Lerp(UI[0].localPosition, new Vector3(-480, 0, 0), 0.1f);
@@ -156,6 +158,7 @@ public class CameraMover : MonoBehaviour
 
         }
         transform.position = new Vector3(transform.position.x, transform.position.y, -10);
+        }
     }
 
     public void TogglePolitiview()

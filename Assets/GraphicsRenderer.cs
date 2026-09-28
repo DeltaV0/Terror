@@ -25,6 +25,13 @@ public class GraphicsRenderer : MonoBehaviour
     public int xS2;
         public int yS2;
 
+    public int xS; //resolution
+        public int yS;
+
+    public static bool DoneLoading;
+
+    public static Color32[] BigAssArrayClear;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
@@ -32,17 +39,14 @@ public class GraphicsRenderer : MonoBehaviour
 
     }
 
-    public void initGraphics()
-    {
-        int xS = 3; //resolution
-        int yS = 3;
-
-        
+    public IEnumerator initGraphicsCrtne()
+    { 
 
         for(int i = 0; i < Nation.me.states.Count ; i++)
                 {
                     Nation.me.states[i].beforeRendering();
                 }
+                yield return new WaitForSeconds(0);
                 t = new Texture2D(1280 / resolution.x * xS2, 720 / resolution.y * xS2); 
        t.filterMode = FilterMode.Point;
        spr = Sprite.Create(t, new Rect(0.0f, 0.0f, t.width, t.height), new Vector2(0.5f, 0.5f), 100.0f);
@@ -60,8 +64,7 @@ public class GraphicsRenderer : MonoBehaviour
         State s = null;
         float d = 0;
         Color color = new Color(0.1f, 0.25f, 0.75f, 1f);
-        
-
+        yield return new WaitForSeconds(0);
        for (int y = 0; y < t.height / yS; y++)
         {
             for (int x = 0; x < t.width / xS; x++)
@@ -79,7 +82,7 @@ public class GraphicsRenderer : MonoBehaviour
                     } 
                     }
                 }
-                pixelPos = ConvertToWorldPos(new Vector2(xOff, yOff));
+                pixelPos = ConvertToWorldPos(new Vector2(xOff - (xS2 > 1 ? t.width/xS2/2 : 0), yOff - (yS2 > 1 ? t.height/xS2/2 : 0)));
                 color = new Color(0.1f, 0.25f, 0.75f, 1f);
                 d = 4 * PN(xOff * 0.5f, yOff * 0.5f) + 3.5f;
                 s = null;
@@ -150,29 +153,39 @@ public class GraphicsRenderer : MonoBehaviour
                 t.SetPixel(xOff, yOff, color);
             }
         }
+        yield return new WaitForSeconds(0);
         for(int i = 0; i < Nation.me.NeighborNations.Count; i++)
                 {
                     Nation.me.NeighborNations[i].t2.Apply();
                 }
         t2.Apply();
         t.Apply(); 
-
+    yield return new WaitForSeconds(0);
         for(int i = 0; i < Nation.me.states.Count; i++)
                 {
                     Nation.me.states[i].finishRendering();
                 }
-
+        yield return new WaitForSeconds(0);
         for(int i = 0; i < Nation.me.states.Count; i++)
                 {
                     Nation.me.states[i].GetNeighbors();
                 }
 
         Nation.me.ConnectRoads();
+        yield return new WaitForSeconds(0);
+        DoneLoading = true;
         Nation.me.debtSpending = Mathf.Round(Nation.me.GetTotalStateIncome() * 0.20f);
         Nation.me.debt = Mathf.Round(Nation.me.GetTotalStateIncome() * 25f);
         Nation.me.nationalSpendingBase = Nation.me.debtSpending * 0.25f;
         Nation.me.money = Nation.me.GetTotalStateIncome() - Nation.me.debtSpending - Nation.me.nationalSpendingBase - Nation.me.GetTotalStateSpending();
         Nation.me.StartTurn();
+        yield return new WaitForSeconds(0);
+        
+    }
+
+    public void initGraphics()
+    {
+      StartCoroutine(initGraphicsCrtne());
     }
 
     public Vector2 ConvertToWorldPos(Vector2 v)
@@ -180,7 +193,7 @@ public class GraphicsRenderer : MonoBehaviour
         Camera c = CameraMover.me.cam;
         Vector2 Temp = v;
 
-        Temp = new Vector2((((float)Temp.x/(float)1280)* 20) - 10, ((((float)Temp.y/(float)720) * 20) - 10) / (16f/9f));
+        Temp = new Vector2((((float)Temp.x/(float)1280)* 20f) - 10f, ((((float)Temp.y/(float)720) * 20f) - 10f) / (16f/9f));
         
         return Temp;
     }

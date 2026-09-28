@@ -229,8 +229,10 @@ MonoBehaviour:
   NationRenderer: {fileID: 1031300578}
   t2: {fileID: 0}
   NeighborNationPf: {fileID: 1458620304112000469, guid: 5f3939729fad5f048bbeb1d8f03acac7, type: 3}
-  xS2: 1
-  yS2: 1
+  xS2: 2
+  yS2: 2
+  xS: 3
+  yS: 3
 --- !u!4 &28938228
 Transform:
   m_ObjectHideFlags: 0
@@ -5221,9 +5223,9 @@ RectTransform:
   - {fileID: 101976496}
   m_Father: {fileID: 1319779666}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 75, y: -50}
   m_SizeDelta: {x: 75, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &806474933
@@ -6471,9 +6473,9 @@ RectTransform:
   - {fileID: 411875316}
   m_Father: {fileID: 1319779666}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 375, y: -50}
   m_SizeDelta: {x: 75, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &957296963
@@ -7940,9 +7942,9 @@ RectTransform:
   - {fileID: 721283862}
   m_Father: {fileID: 1319779666}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 175, y: -50}
   m_SizeDelta: {x: 75, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1073926593
@@ -9584,9 +9586,9 @@ RectTransform:
   - {fileID: 1507256633}
   m_Father: {fileID: 1319779666}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 275, y: -50}
   m_SizeDelta: {x: 75, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1340711790
@@ -10513,7 +10515,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1423244367
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11011,7 +11013,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: -5
+  m_SortingOrder: -307
   m_MaskInteraction: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -14175,6 +14177,7 @@ MonoBehaviour:
   turn: 0
   miniTurn: 0
   microTurn: 0
+  nanoTurn: 0
   politiview: 0
   policiesToVoteOn: []
   speed: 0
@@ -15406,8 +15409,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 639.85, y: 359.93}
-  m_SizeDelta: {x: 1280, y: 720}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 20, y: 11.25}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &2100826615
 GameObject:

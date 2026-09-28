@@ -15,15 +15,22 @@ public class ForeignNation : MonoBehaviour
 
     public Color col;
 
+    public string name;
+
+    
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     public void Init()
     {
+        name = NameGenerator.me.NationNameGenerate();
        Nation.me.NeighborNations.Add(this); 
-       t2 = new Texture2D(1280, 720); 
+       t2 = new Texture2D(1280*GraphicsRenderer.me.xS2, 720*GraphicsRenderer.me.yS2); 
        t2.filterMode = FilterMode.Point;
        spr2 = Sprite.Create(t2, new Rect(0.0f, 0.0f, t2.width, t2.height), new Vector2(0.5f, 0.5f), 100.0f);
         mySprite.sprite = spr2;
-        col =  Color.HSVToRGB(Random.Range(0f, 1f) < 0.25f ? Random.Range(0f, 25f) : Random.Range(0.5f, 1f), 1f, 0.2f, true);
+        int rnd = Random.Range(0, NameGenerator.me.avalNationColors.Count);
+        col = NameGenerator.me.avalNationColors[rnd];//Color.HSVToRGB(Random.Range(0f, 1f) < 0.25f ? Random.Range(0f, 25f) : Random.Range(0.5f, 1f), 1f, 0.2f, true);
+        NameGenerator.me.avalNationColors.RemoveAt(rnd);
     }
 
     public Vector3 avgPos()
@@ -49,9 +56,9 @@ public class ForeignNation : MonoBehaviour
         float d = 100;
         for(int i = 0; i < subStates.Count; i++)
         {
-            if(((v - subStates[i].transform.position)).sqrMagnitude < d)
+            if((v - subStates[i].transform.position).sqrMagnitude < d)
             {
-                d = ((v - subStates[i].transform.position)).sqrMagnitude;
+                d = (v - subStates[i].transform.position).sqrMagnitude;
                 //vect = subStates[i].transform.position;
             }
         }
