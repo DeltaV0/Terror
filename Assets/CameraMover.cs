@@ -88,45 +88,51 @@ public class CameraMover : MonoBehaviour
         } 
         }
         camSize -= Input.mouseScrollDelta.y;
-        if(camSize > 9)
+        if(camSize > 10)
             {
-                camSize = 9;
-            } else if(camSize < 4)
+                camSize = 10;
+            } else if(camSize < 3)
             {
-                camSize = 4;
+                camSize = 3;
             }
        MouseHovererRect.sizeDelta = mousehoverText.rectTransform.sizeDelta + new Vector2(20, 20); 
        MouseHovererRect.GetChild(0).GetComponent<RectTransform>().sizeDelta = mousehoverText.rectTransform.sizeDelta + new Vector2(10, 10);
        if(!Nation.me.doingTurnStuff){
-        if(worldPosition.y < -5.5f + transform.position.y && worldPosition.x > -6 && worldPosition.x < 6)
+        if(worldPosition.y < -5.5f + transform.position.y + camSize/2f)
         {
-            if(!moving)
-            {
-                /*if(screenPos.y == 0){
-                screenPos = new Vector2(0, -2);
-                }else if(screenPos.y == 2){
-                screenPos = new Vector2(0, 0);
-                }*/
-            }
-            moving = true;
-        } else if(worldPosition.y > 5.5f + transform.position.y && worldPosition.x > -6 && worldPosition.x < 6)
+            screenPos += new Vector2(0, -0.1f);
+        } else if(worldPosition.y > 5.5f + transform.position.y -camSize/2f)
         {
-            if(!moving)
-            {
-                /*if(screenPos.y == 0){
-                screenPos = new Vector2(0, 2);
-                } else if(screenPos.y == -2){
-                screenPos = new Vector2(0, 0);
-                }*/
-            }
-            moving = true;
-        } else {
-            moving = false;
+            screenPos += new Vector2(0, 0.1f);
+        }
+
+        if(worldPosition.x < -5 + transform.position.x + camSize/2f)
+        {
+            screenPos += new Vector2(-0.1f, 0);
+        } else if(worldPosition.x > 5 + transform.position.x - camSize/2f)
+        {
+            screenPos += new Vector2(0.1f, 0);
         }
        } else
         {
            moving = false; 
         }
+        if(screenPos.x > 16f - camSize*(16f/9f))
+            {
+                screenPos = new Vector2(16f - camSize*(16f/9f), screenPos.y);
+            }
+        if(screenPos.x < -16f + camSize*(16f/9f))
+            {
+                screenPos = new Vector2(-16f + camSize*(16f/9f), screenPos.y);
+            }
+        if(screenPos.y > 10 - camSize)
+            {
+                screenPos = new Vector2(screenPos.x, 10f - camSize);
+            }
+        if(screenPos.y < -10 + camSize)
+            {
+                screenPos = new Vector2(screenPos.x, -10f + camSize);
+            }
         //if(!targeting){
        if(Nation.me.selectedState == null || Nation.me.doingTurnStuff)
         {
@@ -139,12 +145,12 @@ public class CameraMover : MonoBehaviour
             }
             if (Congress.me.meeting)
             {
-                transform.position = Vector3.Lerp(transform.position, Vector3.Lerp(Vector2.zero + new Vector2(screenPos.x + 3f, screenPos.y * 6f), new Vector3(worldPosition.x, worldPosition.y, -10), 0.025f), 0.1f);
+                transform.position = Vector3.Lerp(transform.position, Vector3.Lerp(Vector2.zero + new Vector2(3f, 0), new Vector3(worldPosition.x, worldPosition.y, -10), 0.025f), 0.1f);
                 cam.orthographicSize = Mathf.Lerp(cam.orthographicSize, 7f, 0.1f);
 
             } else
             {
-                transform.position = Vector3.Lerp(transform.position, Vector3.Lerp(Vector2.zero + new Vector2(screenPos.x, screenPos.y * 6f), new Vector3(worldPosition.x, worldPosition.y, -10), 0.25f), 0.1f);
+                transform.position = Vector3.Lerp(transform.position, Vector3.Lerp(Vector2.zero + new Vector2(screenPos.x, screenPos.y), new Vector3(worldPosition.x, worldPosition.y, -10), 0.1f), 0.1f);
                 cam.orthographicSize = Mathf.Lerp(cam.orthographicSize, camSize, 0.1f);
             }
             UI[0].localPosition = Vector3.Lerp(UI[0].localPosition, new Vector3(-820f, 0, 0), 0.1f);
