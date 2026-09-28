@@ -25,6 +25,8 @@ public class CameraMover : MonoBehaviour
     public bool targeting;
     public Vector3 TargetPos;
 
+    public float camSize;
+
     //public GameObject hoveredObject;
 
     public void HoverOverSomething(string s)
@@ -46,6 +48,7 @@ public class CameraMover : MonoBehaviour
         Cursor.visible = false;
         me = this;
         screenPos = Vector2.zero;
+        camSize = 6;
     }
 
     void Update()
@@ -84,6 +87,14 @@ public class CameraMover : MonoBehaviour
 
         } 
         }
+        camSize -= Input.mouseScrollDelta.y;
+        if(camSize > 9)
+            {
+                camSize = 9;
+            } else if(camSize < 4)
+            {
+                camSize = 4;
+            }
        MouseHovererRect.sizeDelta = mousehoverText.rectTransform.sizeDelta + new Vector2(20, 20); 
        MouseHovererRect.GetChild(0).GetComponent<RectTransform>().sizeDelta = mousehoverText.rectTransform.sizeDelta + new Vector2(10, 10);
        if(!Nation.me.doingTurnStuff){
@@ -133,8 +144,8 @@ public class CameraMover : MonoBehaviour
 
             } else
             {
-                transform.position = Vector3.Lerp(transform.position, Vector3.Lerp(Vector2.zero + new Vector2(screenPos.x, screenPos.y * 6f), new Vector3(worldPosition.x, worldPosition.y, -10), 0.1f), 0.1f);
-                cam.orthographicSize = Mathf.Lerp(cam.orthographicSize, 5f + (Vector3.Distance(worldPosition, Vector3.zero) * 0.1f), 0.1f);
+                transform.position = Vector3.Lerp(transform.position, Vector3.Lerp(Vector2.zero + new Vector2(screenPos.x, screenPos.y * 6f), new Vector3(worldPosition.x, worldPosition.y, -10), 0.25f), 0.1f);
+                cam.orthographicSize = Mathf.Lerp(cam.orthographicSize, camSize, 0.1f);
             }
             UI[0].localPosition = Vector3.Lerp(UI[0].localPosition, new Vector3(-820f, 0, 0), 0.1f);
             UI[1].localPosition = Vector3.Lerp(UI[1].localPosition, new Vector3(820f, 0, 0), 0.1f);
