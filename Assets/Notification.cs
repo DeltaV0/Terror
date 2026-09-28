@@ -16,6 +16,10 @@ public class Notification : MonoBehaviour
 
     public TMP_Text[] text;//usually not important
 
+    public Notification Parent;
+
+    public LineRenderer Connector;
+
     void Awake()
     {
         if(closeButton != null)
@@ -55,6 +59,21 @@ public class Notification : MonoBehaviour
     {
         text[0].text = s;
         return this;
+    }
+
+    void FixedUpdate()
+    {
+        if(Connector != null){
+        if(Parent != null)
+        {
+            Connector.SetPosition(0, transform.position);
+            Connector.SetPosition(1, Parent.transform.position);
+        }  else
+            {
+                Connector.SetPosition(0, transform.position);
+            Connector.SetPosition(1, transform.position);
+            }
+        }
     }
 
 
@@ -101,6 +120,11 @@ public class Notification : MonoBehaviour
         CameraMover.me.hoverText = "";
     }
 
+    public Notification SetNewParent(Notification n){
+        Parent = n;
+        return this;
+    }
+
     public void Response(string data)
     {
         switch (data)
@@ -143,12 +167,12 @@ public class Notification : MonoBehaviour
                 Close();
                 break;
             case "OpenSeniorAdvisor":
-                Nation.me.OpenImmediately("SeniorAdvisorMenu");
-                Close();
+                Nation.me.OpenImmediately("SeniorAdvisorMenu").SetNewParent(this);//.Parent = this;
+                //Close();
                 break;
             case "SeniorAdvisorRecPolicy":
-                Nation.me.OpenImmediately("Proposal").SetPolicy(Policy.NewPolicy("test", 0.25f, -1f));
-                Close();
+                Nation.me.OpenImmediately("Proposal").SetPolicy(Policy.NewPolicy("test", 0.25f, -1f)).SetNewParent(this);
+                //Close();
                 break;
             case "LGTM":
                 //Nation.me.OpenImmediately("SeniorAdvisorMenu");
