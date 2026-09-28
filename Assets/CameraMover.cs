@@ -27,12 +27,27 @@ public class CameraMover : MonoBehaviour
 
     public float camSize;
 
+    public Vector3 offset;
     //public GameObject hoveredObject;
 
     public void HoverOverSomething(string s)
     {
         hoverEnabled = true;
         hoverText = s;
+    }
+
+    public void StartDrag()
+    {
+        //transform.SetAsLastSibling();
+        Vector3 worldPosition = GraphicsRenderer.me.ConvertToWorldPos(Input.mousePosition);
+        offset = -worldPosition - transform.position;
+    }
+
+    public void DragAround()
+    {
+        Vector3 worldPosition = GraphicsRenderer.me.ConvertToWorldPos(Input.mousePosition);//CameraMover.me.cam.ScreenToWorldPoint(Input.mousePosition);
+        
+        screenPos = new Vector3(-worldPosition.x - offset.x, -worldPosition.y - offset.y);
     }
 
     public void StopHovering()
@@ -97,8 +112,8 @@ public class CameraMover : MonoBehaviour
             }
        MouseHovererRect.sizeDelta = mousehoverText.rectTransform.sizeDelta + new Vector2(20, 20); 
        MouseHovererRect.GetChild(0).GetComponent<RectTransform>().sizeDelta = mousehoverText.rectTransform.sizeDelta + new Vector2(10, 10);
-       if(!Nation.me.doingTurnStuff){
-        if(worldPosition.y < -5.5f + transform.position.y + camSize/2f)
+      // if(!Nation.me.doingTurnStuff){
+        /*if(worldPosition.y < -5.5f + transform.position.y + camSize/2f)
         {
             screenPos += new Vector2(0, -0.1f);
         } else if(worldPosition.y > 5.5f + transform.position.y -camSize/2f)
@@ -132,7 +147,7 @@ public class CameraMover : MonoBehaviour
         if(screenPos.y < -10 + camSize)
             {
                 screenPos = new Vector2(screenPos.x, -10f + camSize);
-            }
+            }*/
         //if(!targeting){
        if(Nation.me.selectedState == null || Nation.me.doingTurnStuff)
         {
