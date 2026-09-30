@@ -834,8 +834,8 @@ RectTransform:
   m_GameObject: {fileID: 4767760207036925297}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 1, y: 1, z: 1.3333334}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 4673179324471105642}
   - {fileID: 7007953556502114839}
@@ -907,6 +907,11 @@ MonoBehaviour:
   Identifier: intro
   closeButton: {fileID: 1319213603621790345}
   canClose: 1
+  Location: {fileID: 0}
+  policy: {fileID: 0}
+  text: []
+  Parent: {fileID: 0}
+  Connector: {fileID: 0}
 --- !u!1 &5148850365640452993
 GameObject:
   m_ObjectHideFlags: 0

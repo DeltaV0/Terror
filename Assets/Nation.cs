@@ -21,6 +21,9 @@ public class Nation : MonoBehaviour
 
     public List<State> states = new List<State>();
 
+        public List<State> Waterstates = new List<State>();
+
+
     public List<State> statesNation = new List<State>();
 
     public Transform MainCameraCanvas;
@@ -80,9 +83,13 @@ public class Nation : MonoBehaviour
 
     public int speed;
 
+    public int savedSpeed;
+
     public string name;
 
     readonly int[] DaysInAMonth = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
+    public float spacingOffset;
 
 
 
@@ -92,7 +99,8 @@ public class Nation : MonoBehaviour
         
         GraphicsRenderer.DoneLoading = false;
         name = NameGenerator.me.NationNameGenerate();
-        speed = 2;
+        speed = 3;
+        savedSpeed = 2;
         turn-=1;
         CorruptionDelta = 1f;
         me = this;
@@ -118,7 +126,7 @@ public class Nation : MonoBehaviour
         for(int i = 0; i < 8; i++)
         {
             float q = (float)(i / 4f) * Mathf.PI + Random.Range(-0.25f, 0.25f);
-            GameObject g = Instantiate(statePf, new Vector3(Random.Range(3f, 5f) * Mathf.Cos(q), Random.Range(3f, 5f) * Mathf.Sin(q), 0), Quaternion.identity);
+            GameObject g = Instantiate(statePf, new Vector3(Random.Range(3f + spacingOffset * 0.5f, 5f + spacingOffset) * Mathf.Cos(q), Random.Range(3f + spacingOffset * 0.5f, 5f + spacingOffset) * Mathf.Sin(q), 0), Quaternion.identity);
             states.Add(g.GetComponent<State>());
             states[i+ 16].ID = i + 16;
             states[i+ 16].outside = true;
@@ -133,7 +141,7 @@ public class Nation : MonoBehaviour
         for(int i = 0; i < 8; i++)
         {
             float q = (float)(i / 4f) * Mathf.PI + Random.Range(-0.25f, 0.25f);
-            GameObject g = Instantiate(statePf, new Vector3(Random.Range(8f, 11f) * Mathf.Cos(q) + Random.Range(-3f, 3f), Random.Range(6f, 8f) * Mathf.Sin(q) + Random.Range(-2f, 2f), 0), Quaternion.identity);
+            GameObject g = Instantiate(statePf, new Vector3(Random.Range(8f + spacingOffset * 0.5f, 11f + spacingOffset) * Mathf.Cos(q) + Random.Range(-3f, 3f), Random.Range(6f + spacingOffset * 0.5f, 8f + spacingOffset) * Mathf.Sin(q) + Random.Range(-2f, 2f), 0), Quaternion.identity);
             states.Add(g.GetComponent<State>());
             states[i+ 24].ID = i + 24;
             states[i+ 24].outside = true;
@@ -150,10 +158,25 @@ public class Nation : MonoBehaviour
         for(int i = 0; i < 24; i++)
         {
             float q = Random.Range(0, 2f * Mathf.PI);
-            GameObject g = Instantiate(statePf, new Vector3(Random.Range(6f, 14f) * Mathf.Cos(q), Random.Range(6f, 14f) * Mathf.Sin(q), 0), Quaternion.identity);
+            GameObject g = Instantiate(statePf, new Vector3(Random.Range(6f + spacingOffset * 0.5f, 18f + spacingOffset) * Mathf.Cos(q) + Random.Range(-3f, 3f), Random.Range(6f + spacingOffset * 0.5f, 18f + spacingOffset) * Mathf.Sin(q) + Random.Range(-3f, 3f), 0), Quaternion.identity);
             states.Add(g.GetComponent<State>());
             states[i+ 32].ID = i + 32;
             states[i+ 32].outside = true;
+            
+            g.transform.SetParent(canvas, true);
+
+           // Debug.Log(i + "b");
+        }
+
+         yield return new WaitForSeconds(0);
+        for(int i = 0; i < 64; i++)
+        {
+            //float q = Random.Range(0, 2f * Mathf.PI);
+            GameObject g = Instantiate(statePf, new Vector3(Random.Range(-17f, 17f), Random.Range(-10f, 10f), 0), Quaternion.identity);
+            Waterstates.Add(g.GetComponent<State>());
+            //states[i+ 32].ID = i + 32;
+            Waterstates[i].outside = true;
+            Waterstates[i].water = true;
             
             g.transform.SetParent(canvas, true);
 
@@ -165,6 +188,11 @@ public class Nation : MonoBehaviour
         for(int i = 0; i < 56; i++)
         {
            states[i].init(); 
+        }
+
+        for(int i = 0; i < 64; i++)
+        {
+           Waterstates[i].WaterInit(); 
         }
 
         
@@ -284,6 +312,7 @@ public class Nation : MonoBehaviour
                 {
                     for(int q = 0; q < states[i].neighbors.Count; q++)
                     {
+                        if(!states[i].neighbors[q].water){
                 if (!CheckForRoadConnection(states[i].neighbors[q], states[i]))
                 {
                     Road r = Instantiate(roadPf, Vector3.zero, Quaternion.identity).GetComponent<Road>();
@@ -291,15 +320,19 @@ public class Nation : MonoBehaviour
                     roads.Add(r);
                 }
                     }
+                    }
 
                     for(int q = 0; q < states[i].neighborsOutside.Count; q++)
                     {
+                        if(!states[i].neighborsOutside[q].water){
                 if (!CheckForRoadConnection(states[i].neighborsOutside[q], states[i]) && Random.Range(0f, 1f) > 0.5f)
                 {
                     Road r = Instantiate(roadPf, Vector3.zero, Quaternion.identity).GetComponent<Road>();
                     r.Init(states[i], states[i].neighborsOutside[q], Random.Range(0, 3));
                     roads.Add(r);
                 }
+                
+                    }
                     }
                 }
     }
@@ -322,7 +355,7 @@ public class Nation : MonoBehaviour
         GameObject g = Instantiate(mailQueue[0].gameObject, new Vector3(Random.Range(-3f, 3f), Random.Range(-3f, 3f), 0), Quaternion.identity);
         mailQueue.RemoveAt(0);
         g.transform.SetParent(MainCameraCanvas, true);
-        g.transform.localScale = new Vector3(1, 1, 1);
+       // g.transform.localScale = new Vector3(1, 1, 1);
         g.transform.position = new Vector3(Random.Range(-3f, 3f), Random.Range(-3f, 3f), 0);
         }
     }
@@ -332,7 +365,7 @@ public class Nation : MonoBehaviour
        // if(mailQueue.Count > 0){
         GameObject g = Instantiate(FindEventFromID(s).gameObject, new Vector3(Random.Range(-3f, 3f), Random.Range(-3f, 3f), 0), Quaternion.identity);
         g.transform.SetParent(MainCameraCanvas, true);
-        g.transform.localScale = new Vector3(1, 1, 1);
+        //g.transform.localScale = new Vector3(1, 1, 1);
         g.transform.position = new Vector3(Random.Range(-3f, 3f), Random.Range(-3f, 3f), 0);
         return g.GetComponent<Notification>();
         //}
@@ -446,7 +479,7 @@ public class Nation : MonoBehaviour
             yield return new WaitForSeconds(0.1f);
 
         }
-        speed = 2;
+        speed = savedSpeed;
     }
 
     public IEnumerator TurnEnum()
@@ -541,7 +574,7 @@ public class Nation : MonoBehaviour
     void FixedUpdate()
     {
         if(GraphicsRenderer.DoneLoading){
-        nanoTurn += speed * 15;
+        nanoTurn += speed * 5;
         if(nanoTurn >= 60 && speed > 0)
         {
             nanoTurn = 0;

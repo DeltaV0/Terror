@@ -28,6 +28,8 @@ public class CameraMover : MonoBehaviour
     public float camSize;
 
     public Vector3 offset;
+
+    public bool dragging;
     //public GameObject hoveredObject;
 
     public void HoverOverSomething(string s)
@@ -40,14 +42,20 @@ public class CameraMover : MonoBehaviour
     {
         //transform.SetAsLastSibling();
         Vector3 worldPosition = GraphicsRenderer.me.ConvertToWorldPos(Input.mousePosition);
-        offset = -worldPosition - transform.position;
+        offset = -(worldPosition* camSize/4f) - transform.position;
+        dragging = true;
+    }
+
+    public void EndDrag()
+    {
+        dragging = false;
     }
 
     public void DragAround()
     {
         Vector3 worldPosition = GraphicsRenderer.me.ConvertToWorldPos(Input.mousePosition);//CameraMover.me.cam.ScreenToWorldPoint(Input.mousePosition);
         
-        screenPos = new Vector3(-worldPosition.x - offset.x, -worldPosition.y - offset.y);
+        screenPos = new Vector3(-(worldPosition.x* camSize/4f) - offset.x , -(worldPosition.y * camSize/4f) - offset.y);
     }
 
     public void StopHovering()
@@ -71,6 +79,37 @@ public class CameraMover : MonoBehaviour
         Vector3 worldPosition = cam.ScreenToWorldPoint(Input.mousePosition);
         Pointer.position = new Vector3(worldPosition.x, worldPosition.y, -2f);// - new Vector3(16, 16, 0);
         //Debug.Log(Input.mousePosition);
+        if (Input.GetKeyDown("1"))
+        {
+            Nation.me.speed = 1;
+            Nation.me.savedSpeed = 1;
+        }
+        if (Input.GetKeyDown("2"))
+        {
+            Nation.me.speed = 3;
+            Nation.me.savedSpeed = 3;
+        }
+        if (Input.GetKeyDown("3"))
+        {
+            Nation.me.speed = 6;
+            Nation.me.savedSpeed = 6;
+        }
+        if (Input.GetKeyDown("4"))
+        {
+            Nation.me.speed = 12;
+            Nation.me.savedSpeed = 12;
+        }
+        if (Input.GetKeyDown("space"))
+        {
+            if(Nation.me.speed == 0)
+            {
+                Nation.me.speed = Nation.me.savedSpeed;
+            } else
+            {
+                Nation.me.speed = 0;
+            }
+            
+        }
 
     }
 
@@ -106,9 +145,9 @@ public class CameraMover : MonoBehaviour
         if(camSize > 10)
             {
                 camSize = 10;
-            } else if(camSize < 3)
+            } else if(camSize < 2)
             {
-                camSize = 3;
+                camSize = 2;
             }
        MouseHovererRect.sizeDelta = mousehoverText.rectTransform.sizeDelta + new Vector2(20, 20); 
        MouseHovererRect.GetChild(0).GetComponent<RectTransform>().sizeDelta = mousehoverText.rectTransform.sizeDelta + new Vector2(10, 10);
@@ -178,7 +217,12 @@ public class CameraMover : MonoBehaviour
         } else
         {
                   text[0].text = Nation.me.selectedState.Name;
+                  if(!Nation.me.selectedState.water){
                   text[1].text = "of " + ((Nation.me.selectedState.memberOf != null) ? Nation.me.selectedState.memberOf.name : Nation.me.name);
+                  } else
+                {
+                    text[1].text = "International Water";
+                }
                 transform.position = Vector3.Lerp(transform.position, Vector3.Lerp(Nation.me.selectedState.Centroid, new Vector3(worldPosition.x, worldPosition.y, -10), 0.02f), 0.1f); 
                    cam.orthographicSize = Mathf.Lerp(cam.orthographicSize, Nation.me.selectedState.col.bounds.extents.magnitude * 1.5f, 0.1f);
                  UI[0].localPosition = Vector3.Lerp(UI[0].localPosition, new Vector3(-480, 0, 0), 0.1f);

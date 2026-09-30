@@ -233,6 +233,7 @@ MonoBehaviour:
   yS2: 2
   xS: 4
   yS: 4
+  waterDistance: 1
 --- !u!4 &28938228
 Transform:
   m_ObjectHideFlags: 0
@@ -3501,6 +3502,7 @@ MonoBehaviour:
   TargetPos: {x: 0, y: 0, z: 0}
   camSize: 0
   offset: {x: 0, y: 0, z: 0}
+  dragging: 0
 --- !u!1 &523067344
 GameObject:
   m_ObjectHideFlags: 0
@@ -14014,7 +14016,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!61 &1876152306
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -14106,6 +14108,22 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+  - eventID: 14
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 519420034}
+          m_TargetAssemblyTypeName: CameraMover, Assembly-CSharp
+          m_MethodName: EndDrag
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!212 &1876152308
 SpriteRenderer:
   serializedVersion: 2
@@ -14174,7 +14192,7 @@ Transform:
   m_GameObject: {fileID: 1876152305}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.2, y: 0.02, z: 0}
   m_LocalScale: {x: 35.54, y: 20, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -14672,6 +14690,7 @@ MonoBehaviour:
   NeighborNations: []
   BorderNations: []
   states: []
+  Waterstates: []
   statesNation: []
   MainCameraCanvas: {fileID: 580679007}
   statePf: {fileID: 5293217498206793864, guid: 7874484387ef1c544ba54124a938b898, type: 3}
@@ -14713,7 +14732,9 @@ MonoBehaviour:
   politiview: 0
   policiesToVoteOn: []
   speed: 0
+  savedSpeed: 0
   name: 
+  spacingOffset: 1
 --- !u!4 &1920152380
 Transform:
   m_ObjectHideFlags: 0
@@ -15953,7 +15974,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2090767449}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
   m_Name: 

@@ -20,6 +20,8 @@ public class Notification : MonoBehaviour
 
     public LineRenderer Connector;
 
+    public bool Closed;
+
     void Awake()
     {
         if(closeButton != null)
@@ -28,6 +30,7 @@ public class Notification : MonoBehaviour
         }
        Nation.me.seenEvents.Add(Identifier);
        Nation.me.openThings++;
+       transform.localScale = new Vector3(0,0,0);
     }
 
     public object Shallowcopy()
@@ -74,6 +77,14 @@ public class Notification : MonoBehaviour
             Connector.SetPosition(1, transform.position);
             }
         }
+
+        transform.localScale = Vector3.Lerp(transform.localScale, Closed ? new Vector3(transform.localScale.x, 0, 0): new Vector3(transform.localScale.x, 1, 1), Closed ? 0.3f : 0.2f);
+        transform.localScale = Vector3.Lerp(transform.localScale, Closed ? new Vector3(0, transform.localScale.y, 0): new Vector3(1, transform.localScale.y, 1), Closed ? 0.2f : 0.3f);
+
+        if(Closed && transform.localScale.x < 0.05f)
+        {
+            Destroy(gameObject);
+        }
     }
 
 
@@ -83,7 +94,8 @@ public class Notification : MonoBehaviour
     {
         Nation.me.openThings--;
         UnHover();
-        Destroy(gameObject);
+        Closed = true;
+        
     }
     public void StartDrag()
     {

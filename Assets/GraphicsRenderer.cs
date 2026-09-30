@@ -32,6 +32,8 @@ public class GraphicsRenderer : MonoBehaviour
 
     public static Color32[] BigAssArrayClear;
 
+    public float waterDistance;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
@@ -46,6 +48,8 @@ public class GraphicsRenderer : MonoBehaviour
                 {
                     Nation.me.states[i].beforeRendering();
                 }
+
+
                 yield return new WaitForSeconds(0);
                 t = new Texture2D(1280 / resolution.x * xS2, 720 / resolution.y * xS2); 
        t.filterMode = FilterMode.Point;
@@ -64,6 +68,7 @@ public class GraphicsRenderer : MonoBehaviour
         State s = null;
         float d = 0;
         Color color = new Color(0.1f, 0.25f, 0.75f, 1f);
+        Vector2 RandomOffset = new Vector2(Random.Range(0, 1000000), Random.Range(0, 1000000));
         yield return new WaitForSeconds(0);
        for (int y = 0; y < t.height / yS; y++)
         {
@@ -84,7 +89,7 @@ public class GraphicsRenderer : MonoBehaviour
                 }
                 pixelPos = ConvertToWorldPos(new Vector2(xOff - (xS2 > 1 ? t.width/xS2/2 : 0), yOff - (yS2 > 1 ? t.height/xS2/2 : 0)));
                 color = new Color(0.1f, 0.25f, 0.75f, 1f);
-                d = 4 * PN(xOff * 0.5f, yOff * 0.5f) + 3.5f;
+                d = 3 * PN(xOff * 0.4f, yOff * 0.4f) + waterDistance + (5 * PN(xOff * 0.1f + RandomOffset.x, yOff * 0.1f + RandomOffset.y) - 0.5f);
                 s = null;
                 Vector2 StatePos = Vector2.zero;
                 for(int i = 0; i < Nation.me.states.Count; i++)
@@ -101,6 +106,24 @@ public class GraphicsRenderer : MonoBehaviour
                         
                     }
                 }
+                d = 1000;
+                if(s == null)
+                {
+                    for(int i = 0; i < Nation.me.Waterstates.Count; i++)
+                    {
+                    StatePos = Nation.me.Waterstates[i].transform.position;
+                    float distCurr = 1f * Chebyshev(pixelPos, StatePos + new Vector2(0.1f * PN(xOff * 1f, yOff * 1f), 0.1f * PN(xOff * 1f + 1000, yOff * 1f + 1000))) + 0.25f * Regular(pixelPos, StatePos + new Vector2(0.1f * PN(xOff * 1f,yOff * 1f), 0.1f * PN(xOff * 1f + 1000, yOff * 1f + 1000)));
+                   // float distCurr = Regular(pixelPos, StatePos);
+                    if(d > distCurr)
+                    {
+                        d = distCurr;
+                        s = Nation.me.Waterstates[i];
+                        color = Color.white;
+                        
+                        
+                    }
+                    }
+                }
                 for(int i = 0; i < xS; i++)
                 {
                    for(int q = 0; q < yS; q++)
@@ -110,7 +133,7 @@ public class GraphicsRenderer : MonoBehaviour
                 }
                 
 
-                if(s != null){
+                if(s != null && !s.water){
                 Vector2 Difference = (origin - s.screenPosDefault);
 
                 for(int i = 0; i < xS; i++)
@@ -144,11 +167,19 @@ public class GraphicsRenderer : MonoBehaviour
                         }
 
                     }
-                
-               //S if(d < 0.1f){
-                //   s.tex.SetPixel(x + (int)Difference.x, y + (int)Difference.y, Color.white);
-                //}
 
+                } else if(s != null && s.water)
+                {
+                    Vector2 Difference = (origin - s.screenPosDefault);
+
+                for(int i = 0; i < xS; i++)
+                {
+                   for(int q = 0; q < yS; q++)
+                    {
+                        s.tex.SetPixel(xOff + (int)Difference.x + i, yOff + (int)Difference.y + q, Color.white);
+                    } 
+                }
+                s.hasData = true;
                 }
                 t.SetPixel(xOff, yOff, color);
             }
@@ -165,11 +196,20 @@ public class GraphicsRenderer : MonoBehaviour
                 {
                     Nation.me.states[i].finishRendering();
                 }
+                for(int i = 0; i < Nation.me.Waterstates.Count; i++)
+                {
+                    Nation.me.Waterstates[i].waterRendering();
+                }
         yield return new WaitForSeconds(0);
         for(int i = 0; i < Nation.me.states.Count; i++)
                 {
                     Nation.me.states[i].GetNeighbors();
                 }
+                for(int i = 0; i < Nation.me.Waterstates.Count; i++)
+                {
+                    Nation.me.Waterstates[i].GetNeighbors();
+                }
+        
 
         Nation.me.ConnectRoads();
         yield return new WaitForSeconds(0);

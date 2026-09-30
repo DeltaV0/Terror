@@ -73,6 +73,8 @@ public class State : MonoBehaviour
 
     public Vector3 targetPosBubble;
 
+    public bool water;
+
     //public float income;
 
   //  public List<Road> roads;
@@ -158,6 +160,21 @@ public class State : MonoBehaviour
         return thingsHere.Count > 0;
     }
 
+    public void DragStart()
+    {
+        CameraMover.me.StartDrag();
+    }
+
+
+    public void DragEnd()
+    {
+        CameraMover.me.EndDrag();
+    }
+    public void Drag()
+    {
+        CameraMover.me.DragAround();
+    }
+
     public Rollout GetRollout(string s)
     {
         for(int i = 0; i < thingsHere.Count; i++)
@@ -238,7 +255,7 @@ public class State : MonoBehaviour
 
     public void beforeRendering()
     {
-        if(outside && memberOf == null)
+        if(outside && memberOf == null && !water)
         {
             ForeignNation n = Nation.me.NeighborNations[0];
             foreach(ForeignNation q in Nation.me.NeighborNations)
@@ -278,6 +295,15 @@ public class State : MonoBehaviour
         
     }
 
+    public void WaterInit()
+    {
+        SetScreenPos();
+        tex = new Texture2D(1280*GraphicsRenderer.me.xS2, 720*GraphicsRenderer.me.yS2); 
+        //Debug.Log(tex.width);
+        tex.filterMode = FilterMode.Point;
+        tex = SetClearImage(tex);
+    }
+
     public void MoveToFront(){
         
        // if (!outside)
@@ -312,6 +338,7 @@ public class State : MonoBehaviour
     {
         //if(hovered)
         //{
+        if(!CameraMover.me.dragging){
             selected = !selected;
             if(Nation.me.selectedState != null)
             {
@@ -326,7 +353,52 @@ public class State : MonoBehaviour
             {
                 Nation.me.selectedState = null;
             }
+        }
        // }
+    }
+
+    public void waterRendering()
+    {
+        Vector2 v = new Vector2(1280f/2f, 720f/2f);
+        tex.Apply();
+        spr = Sprite.Create(tex, new Rect(0.0f, 0.0f, tex.width, tex.height), new Vector2(0.5f, 0.5f), 100.0f, 0, SpriteMeshType.Tight);
+
+        mask.sprite = spr;
+        MoveToBack();
+        spriteR.color = new Color(0, 0f, 1f, 0.1f);
+        if (hasData)
+        {
+            spriteR.sprite = spr;
+        }
+
+        if (hasData)
+        {
+            
+            for(int i = 0; i < sprRenders.Length; i++)
+            {
+            sprRenders[i].color = new Color(1, 1, 1, 0.5f);
+            sprRenders[i].sprite = spriteR.sprite;
+            sprRenders[i].enabled = false;
+            }
+            
+        } else
+        {
+            spriteR.color = Color.clear;
+            for(int i = 0; i < sprRenders.Length; i++)
+            {
+            //sprRenders[i].color = new Color(1, 1, 1, 0.5f);
+            sprRenders[i].sprite = null;
+            sprRenders[i].enabled = false;
+            }
+        }
+        sprRenders[0].enabled = true;
+            col = gameObject.AddComponent<PolygonCollider2D>();
+            Centroid = gameObject.GetComponent<Rigidbody2D>().worldCenterOfMass;
+
+            normalSize = transform.localScale.x;
+
+        Name = "Water Sector " + NameGenerator.me.SectorNameGen[Random.Range(0, NameGenerator.me.SectorNameGen.Length)] + "-" + NameGenerator.me.SectorNameGen[Random.Range(0, NameGenerator.me.SectorNameGen.Length)];
+        politicsBubble[0].enabled = false;
     }
 
     public void finishRendering(){
@@ -590,7 +662,39 @@ public class State : MonoBehaviour
                         sprRenders[i].sortingOrder = 65;
                     }
             }
-        }
+        } else
+                {
+                        if (hovered)
+                {
+            
+           // transform.localScale = Vector3.Lerp(transform.localScale, new Vector3(normalSize * 1.5f, normalSize * 1.5f, 1), 0.1f);
+           // spriteR.color = Color.Lerp(spriteR.color, new Color(0.1f, 0.2f, 0.1f), 0.1f);
+            sprRenders[0].color = Color.Lerp(sprRenders[0].color, new Color(1f, 0.8f, 0.8f, 1f), 0.1f);
+           /* for(int i = 1; i < sprRenders.Length; i++)
+            {
+                sprRenders[i].color = Color.Lerp(sprRenders[i].color, new Color(1, 0.5f, 0.5f, 0.5f), 0.1f);
+            }*/
+        } else if(Nation.me.selectedState != this)
+        {
+            MoveToBack();
+            //spriteR.color = Color.Lerp(spriteR.color, new Color(0, 0.1f, 0), 0.1f);
+            sprRenders[0].color = Color.Lerp(sprRenders[0].color, new Color(1f, 1f, 1f, 0.5f), 0.1f);
+            for(int i = 1; i < sprRenders.Length; i++)
+            {
+                sprRenders[i].color = Color.Lerp(sprRenders[i].color, new Color(1, 1f, 1f, 0.5f), 0.1f);
+            }
+
+        } else
+            {
+              // spriteR.color = Color.Lerp(spriteR.color, new Color(0.2f, 0.4f, 0.2f), 0.1f);
+                sprRenders[0].color = Color.Lerp(sprRenders[0].color, new Color(1f, 0.5f, 0.5f), 0.1f); 
+                spriteR.sortingOrder = 64;
+                    for(int i = 0; i < sprRenders.Length; i++)
+                    {
+                        sprRenders[i].sortingOrder = 65;
+                    }
+            }
+                }
         }
         
     }
