@@ -75,6 +75,9 @@ public class State : MonoBehaviour
 
     public bool water;
 
+    public Color32[] GraphicsArray;
+
+
     //public float income;
 
   //  public List<Road> roads;
@@ -239,16 +242,7 @@ public class State : MonoBehaviour
     }
 
     public Texture2D SetClearImage(Texture2D input){
-        input.SetPixels32(GraphicsRenderer.BigAssArrayClear);
-       /* for (int y = 0; y < input.height; y++)
-        {
-            for (int x = 0; x < input.width; x++)
-            {
-                input.SetPixel(x, y,  Color.clear);
-               // t.SetPixel(x, y, color);
-            }
-           // t.Apply(); 
-        }*/
+        input.SetPixels32(GraphicsArray);
         input.Apply(); 
         return input;
     }
@@ -282,10 +276,14 @@ public class State : MonoBehaviour
             memberOf.subStates.Add(this);
             
         }
+        
         tex = new Texture2D(1280*GraphicsRenderer.me.xS2, 720*GraphicsRenderer.me.yS2); 
         //Debug.Log(tex.width);
         tex.filterMode = FilterMode.Point;
-        tex = SetClearImage(tex);
+
+        GraphicsArray = new Color32[tex.width * tex.height];
+
+       // tex = SetClearImage(tex);
         
         
        // spriteR.alphaHitTestMinimumThreshold = 0.75f;
@@ -301,7 +299,10 @@ public class State : MonoBehaviour
         tex = new Texture2D(1280*GraphicsRenderer.me.xS2, 720*GraphicsRenderer.me.yS2); 
         //Debug.Log(tex.width);
         tex.filterMode = FilterMode.Point;
-        tex = SetClearImage(tex);
+
+        GraphicsArray = new Color32[tex.width * tex.height];
+
+        //tex = SetClearImage(tex);
     }
 
     public void MoveToFront(){
@@ -360,7 +361,7 @@ public class State : MonoBehaviour
     public void waterRendering()
     {
         Vector2 v = new Vector2(1280f/2f, 720f/2f);
-        tex.Apply();
+        tex = SetClearImage(tex);
         spr = Sprite.Create(tex, new Rect(0.0f, 0.0f, tex.width, tex.height), new Vector2(0.5f, 0.5f), 100.0f, 0, SpriteMeshType.Tight);
 
         mask.sprite = spr;
@@ -403,7 +404,7 @@ public class State : MonoBehaviour
 
     public void finishRendering(){
         Vector2 v = new Vector2(1280f/2f, 720f/2f);
-        tex.Apply();
+        tex = SetClearImage(tex);
         spr = Sprite.Create(tex, new Rect(0.0f, 0.0f, tex.width, tex.height), new Vector2(0.5f, 0.5f), 100.0f, 0, SpriteMeshType.Tight);
 
         mask.sprite = spr;

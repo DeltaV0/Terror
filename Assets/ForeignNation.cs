@@ -17,6 +17,8 @@ public class ForeignNation : MonoBehaviour
 
     public string name;
 
+    public Color32[] GA;
+
     
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -25,6 +27,7 @@ public class ForeignNation : MonoBehaviour
         name = NameGenerator.me.NationNameGenerate();
        Nation.me.NeighborNations.Add(this); 
        t2 = new Texture2D(1280*GraphicsRenderer.me.xS2, 720*GraphicsRenderer.me.yS2); 
+       GA = new Color32[t2.width * t2.height];
        t2.filterMode = FilterMode.Point;
        spr2 = Sprite.Create(t2, new Rect(0.0f, 0.0f, t2.width, t2.height), new Vector2(0.5f, 0.5f), 100.0f);
         mySprite.sprite = spr2;

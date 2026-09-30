@@ -51,13 +51,16 @@ public class GraphicsRenderer : MonoBehaviour
 
 
                 yield return new WaitForSeconds(0);
-                t = new Texture2D(1280 / resolution.x * xS2, 720 / resolution.y * xS2); 
-       t.filterMode = FilterMode.Point;
-       spr = Sprite.Create(t, new Rect(0.0f, 0.0f, t.width, t.height), new Vector2(0.5f, 0.5f), 100.0f);
+              //  t = new Texture2D(1280 / resolution.x * xS2, 720 / resolution.y * xS2); 
+      /// t.filterMode = FilterMode.Point;
+       //spr = Sprite.Create(t, new Rect(0.0f, 0.0f, t.width, t.height), new Vector2(0.5f, 0.5f), 100.0f);
 
        t2 = new Texture2D(1280 / resolution.x * xS2, 720 / resolution.y * xS2); 
        t2.filterMode = FilterMode.Point;
        spr2 = Sprite.Create(t2, new Rect(0.0f, 0.0f, t2.width, t2.height), new Vector2(0.5f, 0.5f), 100.0f);
+
+        Color32[] GA = new Color32[t2.width * t2.height];
+
         NationRenderer.sprite = spr2;
        image.sprite = spr;
 
@@ -67,12 +70,12 @@ public class GraphicsRenderer : MonoBehaviour
         Vector2 origin = new Vector2(1280f/2f, 720f/2f);
         State s = null;
         float d = 0;
-        Color color = new Color(0.1f, 0.25f, 0.75f, 1f);
+       // Color color = new Color(0.1f, 0.25f, 0.75f, 1f);
         Vector2 RandomOffset = new Vector2(Random.Range(0, 1000000), Random.Range(0, 1000000));
         yield return new WaitForSeconds(0);
-       for (int y = 0; y < t.height / yS; y++)
+       for (int y = 0; y < t2.height / yS; y++)
         {
-            for (int x = 0; x < t.width / xS; x++)
+            for (int x = 0; x < t2.width / xS; x++)
             {
                 int yOff = y * yS;
                 int xOff = x * xS;
@@ -87,8 +90,8 @@ public class GraphicsRenderer : MonoBehaviour
                     } 
                     }
                 }
-                pixelPos = ConvertToWorldPos(new Vector2(xOff - (xS2 > 1 ? t.width/xS2/2 : 0), yOff - (yS2 > 1 ? t.height/xS2/2 : 0)));
-                color = new Color(0.1f, 0.25f, 0.75f, 1f);
+                pixelPos = ConvertToWorldPos(new Vector2(xOff - (xS2 > 1 ? t2.width/xS2/2 : 0), yOff - (yS2 > 1 ? t2.height/xS2/2 : 0)));
+                //color = new Color(0.1f, 0.25f, 0.75f, 1f);
                 d = 3 * PN(xOff * 0.4f, yOff * 0.4f) + waterDistance + (5 * PN(xOff * 0.1f + RandomOffset.x, yOff * 0.1f + RandomOffset.y) - 0.5f);
                 s = null;
                 Vector2 StatePos = Vector2.zero;
@@ -101,7 +104,7 @@ public class GraphicsRenderer : MonoBehaviour
                     {
                         d = distCurr;
                         s = Nation.me.states[i];
-                        color = Color.white;
+                        //color = Color.white;
                         
                         
                     }
@@ -118,19 +121,21 @@ public class GraphicsRenderer : MonoBehaviour
                     {
                         d = distCurr;
                         s = Nation.me.Waterstates[i];
-                        color = Color.white;
+                        //color = Color.white;
                         
                         
                     }
                     }
                 }
-                for(int i = 0; i < xS; i++)
+
+                /*for(int i = 0; i < xS; i++)
                 {
                    for(int q = 0; q < yS; q++)
                     {
-                        t2.SetPixel(xOff + i, yOff + q, Color.clear);
+                        GA[((xOff+ i)) + ((yOff + q)* (t2.width))] =  Color.white;
+                       // t2.SetPixel(xOff + i, yOff + q, Color.clear);
                     } 
-                }
+                }*/
                 
 
                 if(s != null && !s.water){
@@ -140,7 +145,8 @@ public class GraphicsRenderer : MonoBehaviour
                 {
                    for(int q = 0; q < yS; q++)
                     {
-                        s.tex.SetPixel(xOff + (int)Difference.x + i, yOff + (int)Difference.y + q, Color.white);
+                        s.GraphicsArray[((xOff + (int)Difference.x + i)) + ((yOff + (int)Difference.y + q)* (s.tex.width))] =  Color.white;
+                        //s.tex.SetPixel(xOff + (int)Difference.x + i, yOff + (int)Difference.y + q, Color.white);
                     } 
                 }
 
@@ -151,7 +157,7 @@ public class GraphicsRenderer : MonoBehaviour
                         {
                         for(int q = 0; q < yS; q++)
                             {
-                            t2.SetPixel(xOff + i, yOff + q, Color.white);
+                            GA[((xOff+ i)) + ((yOff + q)* (t2.width))] =  Color.white;
                             } 
                         }
 
@@ -162,7 +168,8 @@ public class GraphicsRenderer : MonoBehaviour
                         {
                         for(int q = 0; q < yS; q++)
                             {
-                            s.memberOf.t2.SetPixel(xOff + i, yOff + q, Color.white);
+                                s.memberOf.GA[((xOff+ i)) + ((yOff + q)* (t2.width))] =  Color.white;
+                           // s.memberOf.t2.SetPixel(xOff + i, yOff + q, Color.white);
                             } 
                         }
 
@@ -176,21 +183,23 @@ public class GraphicsRenderer : MonoBehaviour
                 {
                    for(int q = 0; q < yS; q++)
                     {
-                        s.tex.SetPixel(xOff + (int)Difference.x + i, yOff + (int)Difference.y + q, Color.white);
+                        s.GraphicsArray[((xOff + (int)Difference.x + i)) + ((yOff + (int)Difference.y + q)* (s.tex.width))] =  Color.white;
+                        //s.tex.SetPixel(xOff + (int)Difference.x + i, yOff + (int)Difference.y + q, Color.white);
                     } 
                 }
                 s.hasData = true;
                 }
-                t.SetPixel(xOff, yOff, color);
+                //t.SetPixel(xOff, yOff, color);
             }
         }
         yield return new WaitForSeconds(0);
         for(int i = 0; i < Nation.me.NeighborNations.Count; i++)
                 {
-                    Nation.me.NeighborNations[i].t2.Apply();
+                    Nation.me.NeighborNations[i].t2 = SetClearImage(Nation.me.NeighborNations[i].t2, Nation.me.NeighborNations[i].GA);
                 }
-        t2.Apply();
-        t.Apply(); 
+        t2 = SetClearImage(t2, GA);
+       // t2.Apply();
+       // t.Apply(); 
     yield return new WaitForSeconds(0);
         for(int i = 0; i < Nation.me.states.Count; i++)
                 {
@@ -221,6 +230,12 @@ public class GraphicsRenderer : MonoBehaviour
         Nation.me.StartTurn();
         yield return new WaitForSeconds(0);
         
+    }
+
+    public Texture2D SetClearImage(Texture2D input, Color32[] in2){
+        input.SetPixels32(in2);
+        input.Apply(); 
+        return input;
     }
 
     public void initGraphics()
