@@ -407,7 +407,7 @@ public class State : MonoBehaviour
         tex = SetClearImage(tex);
         spr = Sprite.Create(tex, new Rect(0.0f, 0.0f, tex.width, tex.height), new Vector2(0.5f, 0.5f), 100.0f, 0, SpriteMeshType.Tight);
 
-        mask.sprite = spr;
+        //mask.sprite = spr;
         MoveToBack();
         
         if (outside)

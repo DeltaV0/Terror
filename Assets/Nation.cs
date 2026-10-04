@@ -169,7 +169,7 @@ public class Nation : MonoBehaviour
         }
 
          yield return new WaitForSeconds(0);
-        for(int i = 0; i < 64; i++)
+        for(int i = 0; i < 128; i++)
         {
             //float q = Random.Range(0, 2f * Mathf.PI);
             GameObject g = Instantiate(statePf, new Vector3(Random.Range(-17f, 17f), Random.Range(-10f, 10f), 0), Quaternion.identity);
@@ -190,7 +190,7 @@ public class Nation : MonoBehaviour
            states[i].init(); 
         }
 
-        for(int i = 0; i < 64; i++)
+        for(int i = 0; i < 128; i++)
         {
            Waterstates[i].WaterInit(); 
         }
@@ -356,18 +356,30 @@ public class Nation : MonoBehaviour
         mailQueue.RemoveAt(0);
         g.transform.SetParent(MainCameraCanvas, true);
        // g.transform.localScale = new Vector3(1, 1, 1);
-        g.transform.position = new Vector3(Random.Range(-3f, 3f), Random.Range(-3f, 3f), 0);
+        g.transform.position = new Vector3(Random.Range(-3f, 3f) + CameraMover.me.transform.position.x, Random.Range(-3f, 3f) + CameraMover.me.transform.position.y, 0);
         }
     }
 
     public Notification OpenImmediately(string s)
     {
        // if(mailQueue.Count > 0){
-        GameObject g = Instantiate(FindEventFromID(s).gameObject, new Vector3(Random.Range(-3f, 3f), Random.Range(-3f, 3f), 0), Quaternion.identity);
+        GameObject g = Instantiate(FindEventFromID(s).gameObject, new Vector3(Random.Range(-3f, 3f), Random.Range(-3f, 3f) , 0), Quaternion.identity);
         g.transform.SetParent(MainCameraCanvas, true);
         //g.transform.localScale = new Vector3(1, 1, 1);
-        g.transform.position = new Vector3(Random.Range(-3f, 3f), Random.Range(-3f, 3f), 0);
+        g.transform.position = new Vector3(Random.Range(-3f, 3f)+ CameraMover.me.transform.position.x, Random.Range(-3f, 3f)+ CameraMover.me.transform.position.y, 0);
         return g.GetComponent<Notification>();
+        //}
+    }
+
+    public void Unminimize(string s, Notification parent)
+    {
+       // if(mailQueue.Count > 0){
+        //GameObject g = Instantiate(FindEventFromID(s).gameObject, new Vector3(Random.Range(-3f, 3f), Random.Range(-3f, 3f) , 0), Quaternion.identity);
+       // g.transform.SetParent(MainCameraCanvas, true);
+        //g.transform.localScale = new Vector3(1, 1, 1);
+        //g.transform.position = new Vector3(Random.Range(-3f, 3f)+ CameraMover.me.transform.position.x, Random.Range(-3f, 3f)+ CameraMover.me.transform.position.y, 0);
+        GetActualNotificationFromID(s).SetNewParent(parent).Minimized = false;
+       // return g.GetComponent<Notification>();
         //}
     }
 
@@ -540,6 +552,18 @@ public class Nation : MonoBehaviour
             if (ID.Equals(mail[i].Identifier))
             {
                 return (Notification)mail[i].Shallowcopy();
+            }
+        }
+        return null;
+    }
+
+    public Notification GetActualNotificationFromID(string ID)
+    {
+        for(int i = 0; i < mail.Count; i++)
+        {
+            if (ID.Equals(mail[i].Identifier))
+            {
+                return (Notification)mail[i];
             }
         }
         return null;

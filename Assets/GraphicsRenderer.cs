@@ -80,7 +80,7 @@ public class GraphicsRenderer : MonoBehaviour
                 int yOff = y * yS;
                 int xOff = x * xS;
                 
-                for(int i = 0; i < Nation.me.NeighborNations.Count; i++)
+               /* for(int i = 0; i < Nation.me.NeighborNations.Count; i++)
                 {
                     for(int a = 0; a < xS; a++)
                     {
@@ -89,7 +89,7 @@ public class GraphicsRenderer : MonoBehaviour
                         Nation.me.NeighborNations[i].t2.SetPixel(xOff + a, yOff + q, Color.clear);
                     } 
                     }
-                }
+                }*/
                 pixelPos = ConvertToWorldPos(new Vector2(xOff - (xS2 > 1 ? t2.width/xS2/2 : 0), yOff - (yS2 > 1 ? t2.height/xS2/2 : 0)));
                 //color = new Color(0.1f, 0.25f, 0.75f, 1f);
                 d = 3 * PN(xOff * 0.4f, yOff * 0.4f) + waterDistance + (5 * PN(xOff * 0.1f + RandomOffset.x, yOff * 0.1f + RandomOffset.y) - 0.5f);

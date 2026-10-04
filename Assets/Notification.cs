@@ -22,14 +22,18 @@ public class Notification : MonoBehaviour
 
     public bool Closed;
 
+    public bool Minimized;
+
     void Awake()
     {
         if(closeButton != null)
         {
            closeButton.interactable =  canClose; 
         }
+        if(Nation.me != null){
        Nation.me.seenEvents.Add(Identifier);
        Nation.me.openThings++;
+        }
        transform.localScale = new Vector3(0,0,0);
     }
 
@@ -67,7 +71,7 @@ public class Notification : MonoBehaviour
     void FixedUpdate()
     {
         if(Connector != null){
-        if(Parent != null)
+        if(Parent != null && !Closed && !Minimized)
         {
             Connector.SetPosition(0, transform.position);
             Connector.SetPosition(1, Parent.transform.position);
@@ -78,8 +82,8 @@ public class Notification : MonoBehaviour
             }
         }
 
-        transform.localScale = Vector3.Lerp(transform.localScale, Closed ? new Vector3(transform.localScale.x, 0, 0): new Vector3(transform.localScale.x, 1, 1), Closed ? 0.3f : 0.2f);
-        transform.localScale = Vector3.Lerp(transform.localScale, Closed ? new Vector3(0, transform.localScale.y, 0): new Vector3(1, transform.localScale.y, 1), Closed ? 0.2f : 0.3f);
+        transform.localScale = Vector3.Lerp(transform.localScale, Closed || Minimized ? new Vector3(transform.localScale.x, 0, 0): new Vector3(transform.localScale.x, 1, 1), Closed ||Minimized ? 0.3f : 0.2f);
+        transform.localScale = Vector3.Lerp(transform.localScale, Closed || Minimized ? new Vector3(0, transform.localScale.y, 0): new Vector3(1, transform.localScale.y, 1), Closed||Minimized ? 0.2f : 0.3f);
 
         if(Closed && transform.localScale.x < 0.05f)
         {
@@ -95,6 +99,22 @@ public class Notification : MonoBehaviour
         Nation.me.openThings--;
         UnHover();
         Closed = true;
+        
+    }
+
+    public void Minimize()
+    {
+        Nation.me.openThings--;
+        UnHover();
+        Minimized = true;
+        
+    }
+
+    public void UnMinimize()
+    {
+        Nation.me.openThings++;
+        //Hover();
+        Minimized = false;
         
     }
     public void StartDrag()
@@ -180,6 +200,14 @@ public class Notification : MonoBehaviour
                 break;
             case "OpenSeniorAdvisor":
                 Nation.me.OpenImmediately("SeniorAdvisorMenu").SetNewParent(this);//.Parent = this;
+                //Close();
+                break;
+            case "IndustrialAdvisorRecPolicy":
+                Nation.me.Unminimize("IndustrialPolicySelector", this);//.SetNewParent(this);//.Parent = this;
+                //Close();
+                break;
+            case "OpenIndustrialAdvisor":
+                Nation.me.OpenImmediately("IndustrialAdvisorMenu").SetNewParent(this);//.Parent = this;
                 //Close();
                 break;
             case "SeniorAdvisorRecPolicy":

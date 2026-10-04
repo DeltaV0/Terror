@@ -113,6 +113,16 @@ public class CameraMover : MonoBehaviour
 
     }
 
+    public void SetSpeed(int i)
+    {
+        Nation.me.speed = i;
+        if(i != 0)
+        {
+           // Nation.me.speed = i;
+            Nation.me.savedSpeed = i;
+        }
+    }
+
     // Update is called once per frame
     void FixedUpdate()
     {
@@ -170,23 +180,23 @@ public class CameraMover : MonoBehaviour
        } else
         {
            moving = false; 
-        }
-        if(screenPos.x > 16f - camSize*(16f/9f))
+        }*/
+        if(screenPos.x > 16)
             {
-                screenPos = new Vector2(16f - camSize*(16f/9f), screenPos.y);
+                screenPos = new Vector2(16f, screenPos.y);
             }
-        if(screenPos.x < -16f + camSize*(16f/9f))
+        if(screenPos.x < -16f)
             {
-                screenPos = new Vector2(-16f + camSize*(16f/9f), screenPos.y);
+                screenPos = new Vector2(-16f, screenPos.y);
             }
-        if(screenPos.y > 10 - camSize)
+        if(screenPos.y > 10)
             {
-                screenPos = new Vector2(screenPos.x, 10f - camSize);
+                screenPos = new Vector2(screenPos.x, 10f);
             }
-        if(screenPos.y < -10 + camSize)
+        if(screenPos.y < -10)
             {
-                screenPos = new Vector2(screenPos.x, -10f + camSize);
-            }*/
+                screenPos = new Vector2(screenPos.x, -10f);
+            }
         //if(!targeting){
        if(Nation.me.selectedState == null || Nation.me.doingTurnStuff)
         {

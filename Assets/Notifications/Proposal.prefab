@@ -1151,7 +1151,8 @@ MonoBehaviour:
   policy: {fileID: 0}
   text: []
   Parent: {fileID: 0}
-  Connector: {fileID: 0}
+  Connector: {fileID: 5262689804435984277}
+  Closed: 0
 --- !u!120 &5262689804435984277
 LineRenderer:
   serializedVersion: 3
