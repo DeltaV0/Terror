@@ -222,6 +222,7 @@ public class CameraMover : MonoBehaviour
             UI[2].localPosition = Vector3.Lerp(UI[2].localPosition, new Vector3(0, 432, 0), 0.1f);
             UI[3].localPosition = Vector3.Lerp(UI[3].localPosition, new Vector3(0, -432, 0), 0.1f);
             UI[5].localPosition = Vector3.Lerp(UI[5].localPosition, new Vector3(-560, -350, 0), 0.1f);
+            UI[6].localPosition = Vector3.Lerp(UI[6].localPosition, new Vector3(470, 314, 0), 0.1f);
 
                    
         } else
@@ -241,6 +242,8 @@ public class CameraMover : MonoBehaviour
             UI[3].localPosition = Vector3.Lerp(UI[3].localPosition, new Vector3(0, -288, 0), 0.1f);
             UI[4].localPosition = Vector3.Lerp(UI[4].localPosition, new Vector3(-960, 576, 0), 0.1f);
             UI[5].localPosition = Vector3.Lerp(UI[5].localPosition, new Vector3(-960, -576, 0), 0.1f);
+            UI[6].localPosition = Vector3.Lerp(UI[6].localPosition, new Vector3(470*2, 314*2, 0), 0.1f);
+
 
         }
         transform.position = new Vector3(transform.position.x, transform.position.y, -10);

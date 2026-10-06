@@ -4181,6 +4181,7 @@ MonoBehaviour:
   - {fileID: 1490859801}
   - {fileID: 1874029515}
   - {fileID: 1399804193}
+  - {fileID: 1615315590}
   text:
   - {fileID: 144314377}
   - {fileID: 910563215}
@@ -14719,7 +14720,7 @@ GameObject:
   - component: {fileID: 1615315592}
   - component: {fileID: 1615315591}
   m_Layer: 5
-  m_Name: Image
+  m_Name: speed
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -14744,10 +14745,10 @@ RectTransform:
   - {fileID: 1148771391}
   m_Father: {fileID: 1308994861}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.5}
-  m_AnchorMax: {x: 1, y: 0.5}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 470, y: 314}
-  m_SizeDelta: {x: -940, y: 90}
+  m_SizeDelta: {x: 340, y: 90}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1615315591
 MonoBehaviour:
